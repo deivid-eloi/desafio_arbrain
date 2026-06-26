@@ -14,8 +14,8 @@ export default function Layout() {
     <div style={{ display: 'flex', minHeight: '100vh' }}>
       <aside style={{
         width: 220,
-        background: '#1a1a2e',
-        color: '#e0e0e0',
+        background: 'var(--color-primary)',
+        color: 'var(--color-gray-light)',
         padding: '1.5rem 0',
         display: 'flex',
         flexDirection: 'column',
@@ -25,7 +25,7 @@ export default function Layout() {
           textAlign: 'center',
           margin: '0 0 1.5rem',
           fontSize: '1.2rem',
-          color: '#f5a623',
+          color: 'var(--color-yellow)',
           fontWeight: 700,
         }}>
           BrewControl
@@ -40,12 +40,12 @@ export default function Layout() {
               style={({ isActive }) => ({
                 display: 'block',
                 padding: '0.65rem 1.25rem',
-                color: isActive ? '#f5a623' : '#c0c0c0',
-                background: isActive ? 'rgba(245, 166, 35, 0.1)' : 'transparent',
+                color: isActive ? 'var(--color-yellow)' : 'var(--color-gray-light)',
+                background: isActive ? 'rgba(255, 197, 36, 0.12)' : 'transparent',
                 textDecoration: 'none',
                 fontWeight: isActive ? 600 : 400,
                 fontSize: '0.9rem',
-                borderLeft: isActive ? '3px solid #f5a623' : '3px solid transparent',
+                borderLeft: isActive ? '3px solid var(--color-yellow)' : '3px solid transparent',
               })}
             >
               {item.label}
@@ -54,7 +54,7 @@ export default function Layout() {
         </nav>
       </aside>
 
-      <main style={{ flex: 1, padding: '1.5rem 2rem', background: '#f5f5f5' }}>
+      <main style={{ flex: 1, padding: '1.5rem 2rem', background: 'var(--color-gray-light)' }}>
         <Outlet />
       </main>
     </div>

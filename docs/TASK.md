@@ -15,7 +15,7 @@ Prioridade: funcionalidades core funcionando antes de qualquer melhoria.
 
 - Banco de dados: PostgreSQL rodando via Docker; migration inicial aplicada (4 tabelas criadas)
 - Backend: **completo** — CRUD de todas as entidades + Registros com classificação automática + Dashboard com indicadores agregados. Todos os endpoints definidos no CLAUDE.md implementados e testados.
-- Frontend: scaffold concluído (Vite + React + TS); roteamento, tipos, serviços API e layout com sidebar prontos. Páginas são stubs — falta implementar as views.
+- Frontend: scaffold concluído (Vite + React + TS); roteamento, tipos, serviços API, layout com sidebar e design system (Montserrat + cores ArBrain) prontos. Páginas são stubs — falta implementar as views.
 - Deploy: não iniciado
 - Testes: não iniciado
 
@@ -83,6 +83,7 @@ Prioridade: funcionalidades core funcionando antes de qualquer melhoria.
 
 ## Concluído Recentemente
 
+- Design System ArBrain documentado no CLAUDE.md e aplicado no frontend: Montserrat (Google Fonts) em index.html, variáveis CSS de cor em index.css, body com font/bg padrão, sidebar do Layout usando --color-primary / --color-yellow / --color-gray-light
 - Frontend: scaffold Vite + React + TS; react-router-dom + axios; tipos alinhados com DTOs do backend; 5 serviços de API; Layout com sidebar; 6 rotas configuradas; type-check limpo; app roda em http://localhost:5173
 - Registros Fermentativos: CRUD completo com classificação automática calculada no RegistrosService (regra central conforme CLAUDE.md)
 - Classificação testada nos 5 cenários: DentroDopadrao, Atencao (pH fora), Atencao (extrato fora), ForaDoPadrao (temp fora), ForaDoPadrao (temp + pH fora)

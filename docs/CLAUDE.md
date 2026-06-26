@@ -205,6 +205,28 @@ GET     /api/dashboard
 
 ---
 
+## Design System (ArBrain)
+
+### Fonte
+- Montserrat (import via Google Fonts)
+
+### Cores
+- --color-bg: #1D1D2D (fundo escuro)
+- --color-primary: #063852 (azul escuro)
+- --color-secondary: #ACBBCD (azul cinza)
+- --color-gray: #A4A4A4 (cinza)
+- --color-gray-light: #E8E8E8 (cinza claro)
+- --color-yellow: #FFC524 (destaque / Atenção)
+- --color-green: #9CDA97 (Dentro do Padrão)
+- --color-red: #FA9897 (Fora do Padrão)
+
+### Classificação — cores por status
+- DentroDopadrao → --color-green (#9CDA97)
+- Atencao → --color-yellow (#FFC524)
+- ForaDoPadrao → --color-red (#FA9897)
+
+---
+
 ## Configuração Docker
 
 ### Estratégia
