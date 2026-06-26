@@ -15,7 +15,7 @@ Prioridade: funcionalidades core funcionando antes de qualquer melhoria.
 
 - Banco de dados: PostgreSQL rodando via Docker; migration inicial aplicada (4 tabelas criadas)
 - Backend: **completo** — CRUD de todas as entidades + Registros com classificação automática + Dashboard com indicadores agregados. Todos os endpoints definidos no CLAUDE.md implementados e testados.
-- Frontend: não iniciado
+- Frontend: scaffold concluído (Vite + React + TS); roteamento, tipos, serviços API e layout com sidebar prontos. Páginas são stubs — falta implementar as views.
 - Deploy: não iniciado
 - Testes: não iniciado
 
@@ -36,7 +36,7 @@ Prioridade: funcionalidades core funcionando antes de qualquer melhoria.
 - [x] Criar docker-compose.yml com PostgreSQL
 - [x] Scaffold do projeto backend (.NET 9 Web API)
 - [x] Configurar Entity Framework Core + string de conexão
-- [ ] Scaffold do projeto frontend (Vite + React + TypeScript)
+- [x] Scaffold do projeto frontend (Vite + React + TypeScript)
 - [x] Configurar CORS no backend para aceitar requisições do frontend
 
 ### Backend — Modelos e Banco
@@ -55,9 +55,9 @@ Prioridade: funcionalidades core funcionando antes de qualquer melhoria.
 - [x] Endpoint de histórico por lote
 
 ### Frontend — Estrutura
-- [ ] Configurar roteamento (React Router)
-- [ ] Criar serviços de API (axios ou fetch) para cada entidade
-- [ ] Criar tipos TypeScript alinhados com os DTOs do backend
+- [x] Configurar roteamento (React Router)
+- [x] Criar serviços de API (axios ou fetch) para cada entidade
+- [x] Criar tipos TypeScript alinhados com os DTOs do backend
 
 ### Frontend — Páginas
 - [ ] Dashboard (indicadores + acesso rápido)
@@ -83,6 +83,7 @@ Prioridade: funcionalidades core funcionando antes de qualquer melhoria.
 
 ## Concluído Recentemente
 
+- Frontend: scaffold Vite + React + TS; react-router-dom + axios; tipos alinhados com DTOs do backend; 5 serviços de API; Layout com sidebar; 6 rotas configuradas; type-check limpo; app roda em http://localhost:5173
 - Registros Fermentativos: CRUD completo com classificação automática calculada no RegistrosService (regra central conforme CLAUDE.md)
 - Classificação testada nos 5 cenários: DentroDopadrao, Atencao (pH fora), Atencao (extrato fora), ForaDoPadrao (temp fora), ForaDoPadrao (temp + pH fora)
 - GET /api/registros/lote/{numeroDeLote} para histórico por lote (ordem cronológica)
