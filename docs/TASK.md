@@ -1,23 +1,24 @@
 # TASK.md
 
 ## Fase Atual
-Início do desenvolvimento — MVP
+Core completo — finalização e entrega
 
 ---
 
 ## Foco Atual
 Entrega do desafio técnico ArBrain dentro do prazo (29/06 às 13h).
-Prioridade: funcionalidades core funcionando antes de qualquer melhoria.
+Core 100% funcional. Restam apenas deploy e respostas do desafio.
 
 ---
 
 ## Status do Sistema
 
-- Banco de dados: PostgreSQL rodando via Docker; migration inicial aplicada (4 tabelas criadas)
-- Backend: **completo** — CRUD de todas as entidades + Registros com classificação automática + Dashboard com indicadores agregados. Todos os endpoints definidos no CLAUDE.md implementados e testados.
-- Frontend: **completo** — todas as 6 páginas implementadas e funcionando (Dashboard, Cervejas, Tanques, Parâmetros, Registros, Histórico). Design system aplicado. Badges de classificação com cores do DS.
-- Deploy: não iniciado
-- Testes: não iniciado
+- Banco de dados: PostgreSQL 16 via Docker, migrations aplicadas automaticamente na inicialização
+- Backend: **completo** — todos os endpoints do CLAUDE.md implementados e testados. Classificação automática funcionando no RegistrosService.
+- Frontend: **completo** — 6 páginas (Dashboard, Cervejas, Tanques, Parâmetros, Registros, Histórico). Design system ArBrain aplicado.
+- Docker: **completo** — `docker compose up --build` sobe os 3 serviços (postgres + backend + frontend). Healthcheck no postgres, auto-migration, nginx com proxy reverso.
+- README: **completo** — instruções Docker e local, stack, endpoints, variáveis de ambiente.
+- Testes automatizados: não incluso (dívida técnica intencional, documentada no SPECS.md)
 
 ---
 
@@ -30,7 +31,7 @@ Prioridade: funcionalidades core funcionando antes de qualquer melhoria.
 
 ---
 
-## Tarefas Ativas (FAZER AGORA)
+## Tarefas Concluídas
 
 ### Setup
 - [x] Criar docker-compose.yml com PostgreSQL
@@ -68,8 +69,9 @@ Prioridade: funcionalidades core funcionando antes de qualquer melhoria.
 - [x] Histórico de Lotes (seleção + listagem cronológica)
 
 ### Finalização
-- [ ] Testar todos os fluxos manualmente
-- [ ] Escrever README com instruções de execução
+- [x] Docker completo (postgres + backend + frontend)
+- [x] Escrever README com instruções de execução
+- [x] Testar todos os fluxos manualmente
 - [ ] Finalizar respostas às 4 perguntas do desafio
 - [ ] Fazer commit final e enviar link por e-mail
 
@@ -77,48 +79,14 @@ Prioridade: funcionalidades core funcionando antes de qualquer melhoria.
 
 ## Fila (PRÓXIMO)
 
-- Deploy em nuvem com domínio próprio (após core completo)
-
----
-
-## Concluído Recentemente
-
-- Todas as 6 páginas do frontend implementadas: Dashboard (cards com indicadores coloridos), Cervejas (CRUD tabela+form), Tanques (CRUD tabela+form), Parâmetros (seletor de cerveja + form min/max), Registros (form de criação + lista com badges), Histórico de Lotes (busca por lote + lista cronológica)
-- Componente ClassificacaoBadge reutilizável com cores do design system (verde/amarelo/vermelho)
-- Backend ajustado para rodar na porta 5000 (launchSettings), alinhado com baseURL do axios e docker-compose
-- Fluxo completo verificado: criar cerveja → definir parâmetros → criar registros (3 classificações) → dashboard correto → histórico por lote
-- Design System ArBrain documentado no CLAUDE.md e aplicado no frontend: Montserrat (Google Fonts) em index.html, variáveis CSS de cor em index.css, body com font/bg padrão, sidebar do Layout usando --color-primary / --color-yellow / --color-gray-light
-- Frontend: scaffold Vite + React + TS; react-router-dom + axios; tipos alinhados com DTOs do backend; 5 serviços de API; Layout com sidebar; 6 rotas configuradas; type-check limpo; app roda em http://localhost:5173
-- Registros Fermentativos: CRUD completo com classificação automática calculada no RegistrosService (regra central conforme CLAUDE.md)
-- Classificação testada nos 5 cenários: DentroDopadrao, Atencao (pH fora), Atencao (extrato fora), ForaDoPadrao (temp fora), ForaDoPadrao (temp + pH fora)
-- GET /api/registros/lote/{numeroDeLote} para histórico por lote (ordem cronológica)
-- Dashboard: GET /api/dashboard retornando totalRegistros, dentroDopadrao, atencao, foraDoPadrao
-- Response de registros inclui cervejaNome e tanqueNome (via Include no repository)
-- DateTime normalizado para UTC no Service (exigência do Npgsql com timestamp with time zone)
-- Validação de existência de cerveja, tanque e parâmetros ao criar registro (404/422 conforme o caso)
-- CORS configurado no Program.cs liberando http://localhost:5173 (frontend Vite)
-- CRUD completo de Cervejas, Tanques e Parâmetros Fermentativos (Controller fino + Service com regra/mapa + Repository EF Core + DTOs request/response)
-- Parâmetros aninhados em /api/cervejas/{id}/parametros, relação 1:1 (POST cria, PUT atualiza; sem DELETE conforme CLAUDE.md)
-- DI com classes concretas (sem interfaces — padrão não previsto no CLAUDE.md; mantida simplicidade)
-- Validação de entrada via DataAnnotations + [ApiController] (400 automático)
-- Todos os endpoints testados manualmente via curl (200/201/204/400/404/409 conforme esperado); dados de teste removidos do banco
-- Setup do backend: docker-compose (PostgreSQL 16), scaffold .NET 9 Web API (template controllers, boilerplate WeatherForecast removido)
-- EF Core + Npgsql instalados e fixados (Npgsql 9.0.4, EF Design 9.0.17); ferramenta dotnet-ef instalada
-- appsettings.Development.json com string de conexão (gitignore corrigido para o caminho real do projeto)
-- Entidades, enum ClassificacaoRegistro e AppDbContext criados; DbContext registrado no Program.cs
-- Migration inicial (InicialCreate) criada e aplicada — banco com as 4 tabelas
-- Estrutura de diretórios criada
-- SPECS.md preenchido
-- CLAUDE.md preenchido
-- TASK.md preenchido
-- AI_CONTEXT.md preenchido
+- Deploy em nuvem com domínio próprio (após entrega do core)
+- Finalizar respostas às 4 perguntas do desafio
 
 ---
 
 ## Riscos Conhecidos
 
-- C# / .NET é o ponto mais fraco do stack — priorizar scaffold e configuração do EF Core cedo
-- Configuração do PostgreSQL com Docker pode gerar atrito — resolver antes de qualquer código de negócio
+- Nenhum risco bloqueante. Core 100% funcional e testado via Docker.
 
 ---
 
