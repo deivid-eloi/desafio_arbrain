@@ -15,7 +15,7 @@ Prioridade: funcionalidades core funcionando antes de qualquer melhoria.
 
 - Banco de dados: PostgreSQL rodando via Docker; migration inicial aplicada (4 tabelas criadas)
 - Backend: **completo** — CRUD de todas as entidades + Registros com classificação automática + Dashboard com indicadores agregados. Todos os endpoints definidos no CLAUDE.md implementados e testados.
-- Frontend: scaffold concluído (Vite + React + TS); roteamento, tipos, serviços API, layout com sidebar e design system (Montserrat + cores ArBrain) prontos. Páginas são stubs — falta implementar as views.
+- Frontend: **completo** — todas as 6 páginas implementadas e funcionando (Dashboard, Cervejas, Tanques, Parâmetros, Registros, Histórico). Design system aplicado. Badges de classificação com cores do DS.
 - Deploy: não iniciado
 - Testes: não iniciado
 
@@ -60,12 +60,12 @@ Prioridade: funcionalidades core funcionando antes de qualquer melhoria.
 - [x] Criar tipos TypeScript alinhados com os DTOs do backend
 
 ### Frontend — Páginas
-- [ ] Dashboard (indicadores + acesso rápido)
-- [ ] Cadastro de Cervejas (listagem + formulário)
-- [ ] Cadastro de Tanques (listagem + formulário)
-- [ ] Cadastro de Parâmetros (vinculado à cerveja)
-- [ ] Registro de Fermentação (formulário)
-- [ ] Histórico de Lotes (seleção + listagem cronológica)
+- [x] Dashboard (indicadores + acesso rápido)
+- [x] Cadastro de Cervejas (listagem + formulário)
+- [x] Cadastro de Tanques (listagem + formulário)
+- [x] Cadastro de Parâmetros (vinculado à cerveja)
+- [x] Registro de Fermentação (formulário)
+- [x] Histórico de Lotes (seleção + listagem cronológica)
 
 ### Finalização
 - [ ] Testar todos os fluxos manualmente
@@ -83,6 +83,10 @@ Prioridade: funcionalidades core funcionando antes de qualquer melhoria.
 
 ## Concluído Recentemente
 
+- Todas as 6 páginas do frontend implementadas: Dashboard (cards com indicadores coloridos), Cervejas (CRUD tabela+form), Tanques (CRUD tabela+form), Parâmetros (seletor de cerveja + form min/max), Registros (form de criação + lista com badges), Histórico de Lotes (busca por lote + lista cronológica)
+- Componente ClassificacaoBadge reutilizável com cores do design system (verde/amarelo/vermelho)
+- Backend ajustado para rodar na porta 5000 (launchSettings), alinhado com baseURL do axios e docker-compose
+- Fluxo completo verificado: criar cerveja → definir parâmetros → criar registros (3 classificações) → dashboard correto → histórico por lote
 - Design System ArBrain documentado no CLAUDE.md e aplicado no frontend: Montserrat (Google Fonts) em index.html, variáveis CSS de cor em index.css, body com font/bg padrão, sidebar do Layout usando --color-primary / --color-yellow / --color-gray-light
 - Frontend: scaffold Vite + React + TS; react-router-dom + axios; tipos alinhados com DTOs do backend; 5 serviços de API; Layout com sidebar; 6 rotas configuradas; type-check limpo; app roda em http://localhost:5173
 - Registros Fermentativos: CRUD completo com classificação automática calculada no RegistrosService (regra central conforme CLAUDE.md)
