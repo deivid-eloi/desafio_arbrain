@@ -28,6 +28,9 @@ builder.Services.AddScoped<TanquesRepository>();
 builder.Services.AddScoped<TanquesService>();
 builder.Services.AddScoped<ParametrosRepository>();
 builder.Services.AddScoped<ParametrosService>();
+builder.Services.AddScoped<RegistrosRepository>();
+builder.Services.AddScoped<RegistrosService>();
+builder.Services.AddScoped<DashboardService>();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 

@@ -14,7 +14,7 @@ Prioridade: funcionalidades core funcionando antes de qualquer melhoria.
 ## Status do Sistema
 
 - Banco de dados: PostgreSQL rodando via Docker; migration inicial aplicada (4 tabelas criadas)
-- Backend: CRUD completo (Controller/Service/Repository/DTOs) de Cervejas, Tanques e Parâmetros Fermentativos funcionando e testado; CORS liberado para o frontend. Faltam Registros e Dashboard.
+- Backend: **completo** — CRUD de todas as entidades + Registros com classificação automática + Dashboard com indicadores agregados. Todos os endpoints definidos no CLAUDE.md implementados e testados.
 - Frontend: não iniciado
 - Deploy: não iniciado
 - Testes: não iniciado
@@ -49,10 +49,10 @@ Prioridade: funcionalidades core funcionando antes de qualquer melhoria.
 - [x] CervejasController + CervejasService + CervejasRepository (CRUD)
 - [x] TanquesController + TanquesService + TanquesRepository (CRUD)
 - [x] ParametrosController + ParametrosService + ParametrosRepository (CRUD vinculado à cerveja)
-- [ ] RegistrosController + RegistrosService + RegistrosRepository
-- [ ] Implementar lógica de classificação automática no RegistrosService
-- [ ] DashboardController + DashboardService (indicadores agregados)
-- [ ] Endpoint de histórico por lote
+- [x] RegistrosController + RegistrosService + RegistrosRepository
+- [x] Implementar lógica de classificação automática no RegistrosService
+- [x] DashboardController + DashboardService (indicadores agregados)
+- [x] Endpoint de histórico por lote
 
 ### Frontend — Estrutura
 - [ ] Configurar roteamento (React Router)
@@ -83,6 +83,13 @@ Prioridade: funcionalidades core funcionando antes de qualquer melhoria.
 
 ## Concluído Recentemente
 
+- Registros Fermentativos: CRUD completo com classificação automática calculada no RegistrosService (regra central conforme CLAUDE.md)
+- Classificação testada nos 5 cenários: DentroDopadrao, Atencao (pH fora), Atencao (extrato fora), ForaDoPadrao (temp fora), ForaDoPadrao (temp + pH fora)
+- GET /api/registros/lote/{numeroDeLote} para histórico por lote (ordem cronológica)
+- Dashboard: GET /api/dashboard retornando totalRegistros, dentroDopadrao, atencao, foraDoPadrao
+- Response de registros inclui cervejaNome e tanqueNome (via Include no repository)
+- DateTime normalizado para UTC no Service (exigência do Npgsql com timestamp with time zone)
+- Validação de existência de cerveja, tanque e parâmetros ao criar registro (404/422 conforme o caso)
 - CORS configurado no Program.cs liberando http://localhost:5173 (frontend Vite)
 - CRUD completo de Cervejas, Tanques e Parâmetros Fermentativos (Controller fino + Service com regra/mapa + Repository EF Core + DTOs request/response)
 - Parâmetros aninhados em /api/cervejas/{id}/parametros, relação 1:1 (POST cria, PUT atualiza; sem DELETE conforme CLAUDE.md)
