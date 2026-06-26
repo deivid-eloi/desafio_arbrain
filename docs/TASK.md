@@ -13,8 +13,8 @@ Prioridade: funcionalidades core funcionando antes de qualquer melhoria.
 
 ## Status do Sistema
 
-- Banco de dados: não iniciado
-- Backend: não iniciado
+- Banco de dados: PostgreSQL rodando via Docker; migration inicial aplicada (4 tabelas criadas)
+- Backend: scaffold concluído (.NET 9 Web API) — entidades, enum e DbContext criados; sem controllers/services/repositories ainda
 - Frontend: não iniciado
 - Deploy: não iniciado
 - Testes: não iniciado
@@ -33,17 +33,17 @@ Prioridade: funcionalidades core funcionando antes de qualquer melhoria.
 ## Tarefas Ativas (FAZER AGORA)
 
 ### Setup
-- [ ] Criar docker-compose.yml com PostgreSQL
-- [ ] Scaffold do projeto backend (.NET 9 Web API)
-- [ ] Configurar Entity Framework Core + string de conexão
+- [x] Criar docker-compose.yml com PostgreSQL
+- [x] Scaffold do projeto backend (.NET 9 Web API)
+- [x] Configurar Entity Framework Core + string de conexão
 - [ ] Scaffold do projeto frontend (Vite + React + TypeScript)
 - [ ] Configurar CORS no backend para aceitar requisições do frontend
 
 ### Backend — Modelos e Banco
-- [ ] Criar entidades: Cerveja, Tanque, ParametrosFermentativos, RegistroFermentativo
-- [ ] Criar enum ClassificacaoRegistro
-- [ ] Configurar DbContext com todas as entidades
-- [ ] Criar e aplicar migration inicial
+- [x] Criar entidades: Cerveja, Tanque, ParametrosFermentativos, RegistroFermentativo
+- [x] Criar enum ClassificacaoRegistro
+- [x] Configurar DbContext com todas as entidades
+- [x] Criar e aplicar migration inicial
 
 ### Backend — Funcionalidades
 - [ ] CervejasController + CervejasService + CervejasRepository (CRUD)
@@ -83,6 +83,11 @@ Prioridade: funcionalidades core funcionando antes de qualquer melhoria.
 
 ## Concluído Recentemente
 
+- Setup do backend: docker-compose (PostgreSQL 16), scaffold .NET 9 Web API (template controllers, boilerplate WeatherForecast removido)
+- EF Core + Npgsql instalados e fixados (Npgsql 9.0.4, EF Design 9.0.17); ferramenta dotnet-ef instalada
+- appsettings.Development.json com string de conexão (gitignore corrigido para o caminho real do projeto)
+- Entidades, enum ClassificacaoRegistro e AppDbContext criados; DbContext registrado no Program.cs
+- Migration inicial (InicialCreate) criada e aplicada — banco com as 4 tabelas
 - Estrutura de diretórios criada
 - SPECS.md preenchido
 - CLAUDE.md preenchido
