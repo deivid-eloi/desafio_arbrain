@@ -14,7 +14,7 @@ Prioridade: funcionalidades core funcionando antes de qualquer melhoria.
 ## Status do Sistema
 
 - Banco de dados: PostgreSQL rodando via Docker; migration inicial aplicada (4 tabelas criadas)
-- Backend: scaffold concluído (.NET 9 Web API) — entidades, enum e DbContext criados; sem controllers/services/repositories ainda
+- Backend: CRUD completo (Controller/Service/Repository/DTOs) de Cervejas, Tanques e Parâmetros Fermentativos funcionando e testado; CORS liberado para o frontend. Faltam Registros e Dashboard.
 - Frontend: não iniciado
 - Deploy: não iniciado
 - Testes: não iniciado
@@ -37,7 +37,7 @@ Prioridade: funcionalidades core funcionando antes de qualquer melhoria.
 - [x] Scaffold do projeto backend (.NET 9 Web API)
 - [x] Configurar Entity Framework Core + string de conexão
 - [ ] Scaffold do projeto frontend (Vite + React + TypeScript)
-- [ ] Configurar CORS no backend para aceitar requisições do frontend
+- [x] Configurar CORS no backend para aceitar requisições do frontend
 
 ### Backend — Modelos e Banco
 - [x] Criar entidades: Cerveja, Tanque, ParametrosFermentativos, RegistroFermentativo
@@ -46,9 +46,9 @@ Prioridade: funcionalidades core funcionando antes de qualquer melhoria.
 - [x] Criar e aplicar migration inicial
 
 ### Backend — Funcionalidades
-- [ ] CervejasController + CervejasService + CervejasRepository (CRUD)
-- [ ] TanquesController + TanquesService + TanquesRepository (CRUD)
-- [ ] ParametrosController + ParametrosService + ParametrosRepository (CRUD vinculado à cerveja)
+- [x] CervejasController + CervejasService + CervejasRepository (CRUD)
+- [x] TanquesController + TanquesService + TanquesRepository (CRUD)
+- [x] ParametrosController + ParametrosService + ParametrosRepository (CRUD vinculado à cerveja)
 - [ ] RegistrosController + RegistrosService + RegistrosRepository
 - [ ] Implementar lógica de classificação automática no RegistrosService
 - [ ] DashboardController + DashboardService (indicadores agregados)
@@ -83,6 +83,12 @@ Prioridade: funcionalidades core funcionando antes de qualquer melhoria.
 
 ## Concluído Recentemente
 
+- CORS configurado no Program.cs liberando http://localhost:5173 (frontend Vite)
+- CRUD completo de Cervejas, Tanques e Parâmetros Fermentativos (Controller fino + Service com regra/mapa + Repository EF Core + DTOs request/response)
+- Parâmetros aninhados em /api/cervejas/{id}/parametros, relação 1:1 (POST cria, PUT atualiza; sem DELETE conforme CLAUDE.md)
+- DI com classes concretas (sem interfaces — padrão não previsto no CLAUDE.md; mantida simplicidade)
+- Validação de entrada via DataAnnotations + [ApiController] (400 automático)
+- Todos os endpoints testados manualmente via curl (200/201/204/400/404/409 conforme esperado); dados de teste removidos do banco
 - Setup do backend: docker-compose (PostgreSQL 16), scaffold .NET 9 Web API (template controllers, boilerplate WeatherForecast removido)
 - EF Core + Npgsql instalados e fixados (Npgsql 9.0.4, EF Design 9.0.17); ferramenta dotnet-ef instalada
 - appsettings.Development.json com string de conexão (gitignore corrigido para o caminho real do projeto)

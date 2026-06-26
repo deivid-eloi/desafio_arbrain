@@ -1,4 +1,6 @@
 using BrewControl.Api.Data;
+using BrewControl.Api.Repositories;
+using BrewControl.Api.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +12,22 @@ builder.Services.AddControllers();
 // Registra o DbContext com o provider PostgreSQL (Npgsql).
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Libera o frontend (Vite) a consumir a API durante o desenvolvimento.
+const string FrontendCorsPolicy = "FrontendCorsPolicy";
+builder.Services.AddCors(options =>
+    options.AddPolicy(FrontendCorsPolicy, policy =>
+        policy.WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod()));
+
+// Injeção de dependência das camadas de serviço e repositório.
+builder.Services.AddScoped<CervejasRepository>();
+builder.Services.AddScoped<CervejasService>();
+builder.Services.AddScoped<TanquesRepository>();
+builder.Services.AddScoped<TanquesService>();
+builder.Services.AddScoped<ParametrosRepository>();
+builder.Services.AddScoped<ParametrosService>();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -22,6 +40,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(FrontendCorsPolicy);
 
 app.UseAuthorization();
 
