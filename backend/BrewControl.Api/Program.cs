@@ -108,60 +108,66 @@ using (var scope = app.Services.CreateScope())
         db.ParametrosFermentativos.AddRange(paramIpa, paramPilsen, paramWeizen);
         db.SaveChanges();
 
-        var agora = DateTime.UtcNow;
-        var registrosIpa = new (int dias, decimal temp, decimal ph, decimal extrato)[]
-        {
-            (5, 19.5m, 4.2m, 4.8m),
-            (4, 20.1m, 4.3m, 4.2m),
-            (3, 22.8m, 4.4m, 3.8m),
-            (2, 24.5m, 4.5m, 3.2m),
-            (1, 21.0m, 4.2m, 3.0m),
-        };
+        // Cria os registros de um lote a partir de uma curva fermentativa
+        // pré-definida. A classificação é SEMPRE calculada por
+        // RegistrosService.Classificar (regra central) — nunca hardcoded.
+        // Cada registro recebe hora/minuto próprios para refletir apontamentos
+        // reais ao longo do dia, em vez de um único timestamp repetido.
+        var hojeUtc = DateTime.UtcNow.Date;
 
-        foreach (var (dias, temp, ph, extrato) in registrosIpa)
+        void SemearLote(
+            string lote, int cervejaId, int tanqueId, ParametrosFermentativos parametros,
+            (int dias, int hora, int minuto, decimal temp, decimal ph, decimal extrato)[] curva)
         {
-            var req = new RegistroRequest
+            foreach (var (dias, hora, minuto, temp, ph, extrato) in curva)
             {
-                DataHora = agora.AddDays(-dias),
-                CervejaId = cervejas[0].Id, TanqueId = tanques[0].Id,
-                NumeroDeLote = "IPA-2026-001",
-                Temperatura = temp, Ph = ph, Extrato = extrato,
-            };
-            db.RegistrosFermentativos.Add(new RegistroFermentativo
-            {
-                DataHora = agora.AddDays(-dias),
-                CervejaId = req.CervejaId, TanqueId = req.TanqueId,
-                NumeroDeLote = req.NumeroDeLote,
-                Temperatura = req.Temperatura, Ph = req.Ph, Extrato = req.Extrato,
-                Classificacao = RegistrosService.Classificar(req, paramIpa),
-            });
+                var req = new RegistroRequest
+                {
+                    DataHora = hojeUtc.AddDays(-dias).AddHours(hora).AddMinutes(minuto),
+                    CervejaId = cervejaId, TanqueId = tanqueId,
+                    NumeroDeLote = lote,
+                    Temperatura = temp, Ph = ph, Extrato = extrato,
+                };
+                db.RegistrosFermentativos.Add(new RegistroFermentativo
+                {
+                    DataHora = req.DataHora,
+                    CervejaId = req.CervejaId, TanqueId = req.TanqueId,
+                    NumeroDeLote = req.NumeroDeLote,
+                    Temperatura = req.Temperatura, Ph = req.Ph, Extrato = req.Extrato,
+                    Classificacao = RegistrosService.Classificar(req, parametros),
+                });
+            }
         }
 
-        var registrosPilsen = new (int dias, decimal temp, decimal ph, decimal extrato)[]
+        // IPA-2026-001 (Tanque A): curva de ale — temperatura sobe até o pico e
+        // recua, extrato cai continuamente, pH estável com leve variação no fim.
+        SemearLote("IPA-2026-001", cervejas[0].Id, tanques[0].Id, paramIpa, new[]
         {
-            (3, 9.0m, 4.3m, 3.2m),
-            (2, 11.5m, 4.7m, 2.8m),
-            (1, 10.0m, 4.4m, 2.5m),
-        };
+            (5,  8, 30, 18.5m, 4.2m, 4.9m), // dentro do padrão
+            (4, 14, 15, 20.2m, 4.3m, 4.3m), // dentro do padrão
+            (3,  9, 45, 21.8m, 4.3m, 3.6m), // dentro do padrão
+            (2, 16, 50, 23.5m, 4.4m, 3.1m), // temperatura acima do teto → fora do padrão
+            (1, 11, 20, 20.5m, 4.6m, 2.8m), // pH e extrato fora da faixa → atenção
+        });
 
-        foreach (var (dias, temp, ph, extrato) in registrosPilsen)
+        // PIL-2026-003 (Tanque B): curva de lager — fermentação fria e controlada,
+        // com leve sobre-atenuação (extrato abaixo do mínimo) no último apontamento.
+        SemearLote("PIL-2026-003", cervejas[1].Id, tanques[1].Id, paramPilsen, new[]
         {
-            var req = new RegistroRequest
-            {
-                DataHora = agora.AddDays(-dias),
-                CervejaId = cervejas[1].Id, TanqueId = tanques[1].Id,
-                NumeroDeLote = "PIL-2026-003",
-                Temperatura = temp, Ph = ph, Extrato = extrato,
-            };
-            db.RegistrosFermentativos.Add(new RegistroFermentativo
-            {
-                DataHora = agora.AddDays(-dias),
-                CervejaId = req.CervejaId, TanqueId = req.TanqueId,
-                NumeroDeLote = req.NumeroDeLote,
-                Temperatura = req.Temperatura, Ph = req.Ph, Extrato = req.Extrato,
-                Classificacao = RegistrosService.Classificar(req, paramPilsen),
-            });
-        }
+            (3,  7, 50,  9.2m, 4.3m, 3.4m), // dentro do padrão
+            (2, 13, 30, 11.0m, 4.4m, 2.7m), // dentro do padrão
+            (1, 18, 10, 10.3m, 4.5m, 1.8m), // extrato abaixo do mínimo → atenção
+        });
+
+        // WEI-2026-004 (Tanque C): curva de weizen — fermentação quente que
+        // ultrapassa o teto de temperatura no pico e depois recua.
+        SemearLote("WEI-2026-004", cervejas[2].Id, tanques[2].Id, paramWeizen, new[]
+        {
+            (4,  8,  5, 16.5m, 4.2m, 3.9m), // dentro do padrão
+            (3, 15, 40, 18.8m, 4.3m, 3.2m), // dentro do padrão
+            (2, 10, 25, 20.5m, 4.5m, 2.8m), // temperatura acima do teto → fora do padrão
+            (1, 17, 15, 18.0m, 4.7m, 2.4m), // pH e extrato fora da faixa → atenção
+        });
 
         db.SaveChanges();
     }
