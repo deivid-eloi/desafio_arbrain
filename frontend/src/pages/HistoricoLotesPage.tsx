@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
-import type { RegistroResponse } from '../types';
+import type { RegistroResponse, ParametrosResponse } from '../types';
 import { registrosService } from '../services/registrosService';
+import { parametrosService } from '../services/parametrosService';
 import ClassificacaoBadge from '../components/ClassificacaoBadge';
+import EvolucaoLoteChart from '../components/EvolucaoLoteChart';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -23,6 +25,7 @@ export default function HistoricoLotesPage() {
   const [erro, setErro] = useState('');
   const [buscando, setBuscando] = useState(false);
   const [lotesDisponiveis, setLotesDisponiveis] = useState<string[]>([]);
+  const [parametros, setParametros] = useState<ParametrosResponse | null>(null);
 
   useEffect(() => {
     registrosService.listarTodos()
@@ -32,6 +35,21 @@ export default function HistoricoLotesPage() {
       })
       .catch(() => {});
   }, []);
+
+  // Busca os parâmetros da cerveja do lote para desenhar as faixas de referência
+  // no gráfico. Apenas exibição — sem regra de negócio. Cerveja sem parâmetros
+  // cadastrados (404) simplesmente omite as linhas de referência.
+  useEffect(() => {
+    if (registros.length === 0) {
+      setParametros(null);
+      return;
+    }
+    let ativo = true;
+    parametrosService.obterPorCerveja(registros[0].cervejaId)
+      .then((p) => { if (ativo) setParametros(p); })
+      .catch(() => { if (ativo) setParametros(null); });
+    return () => { ativo = false; };
+  }, [registros]);
 
   const buscarLote = async (numero: string) => {
     setLote(numero);
@@ -159,6 +177,8 @@ export default function HistoricoLotesPage() {
               </div>
             </CardContent>
           </Card>
+
+          <EvolucaoLoteChart registros={registros} parametros={parametros} />
 
           <div className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
             <Table>
