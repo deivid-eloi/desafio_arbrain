@@ -71,7 +71,7 @@ Core 100% funcional. Restam apenas deploy e respostas do desafio.
 ### Finalização
 - [x] Docker completo (postgres + backend + frontend)
 - [x] Escrever README com instruções de execução
-- [x] Testar todos os fluxos manualmente
+- [x] Testar todos os fluxos manualmente (clean-slate Docker: down -v → up --build → full CRUD → classificação 3/3 → dashboard → histórico ✓)
 - [ ] Finalizar respostas às 4 perguntas do desafio
 - [ ] Fazer commit final e enviar link por e-mail
 
