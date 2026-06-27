@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { RegistroResponse } from '../types';
 import { registrosService } from '../services/registrosService';
 import ClassificacaoBadge from '../components/ClassificacaoBadge';
@@ -23,6 +23,32 @@ export default function HistoricoLotesPage() {
   const [buscou, setBuscou] = useState(false);
   const [erro, setErro] = useState('');
   const [buscando, setBuscando] = useState(false);
+  const [lotesDisponiveis, setLotesDisponiveis] = useState<string[]>([]);
+
+  useEffect(() => {
+    registrosService.listarTodos()
+      .then(todos => {
+        const unicos = [...new Set(todos.map(r => r.numeroDeLote))];
+        setLotesDisponiveis(unicos.sort());
+      })
+      .catch(() => {});
+  }, []);
+
+  const buscarLote = async (numero: string) => {
+    setLote(numero);
+    setErro('');
+    setBuscou(false);
+    setBuscando(true);
+    try {
+      const dados = await registrosService.obterPorLote(numero.trim());
+      setRegistros(dados);
+      setBuscou(true);
+    } catch {
+      setErro('Erro ao buscar registros do lote.');
+    } finally {
+      setBuscando(false);
+    }
+  };
 
   const buscar = async () => {
     if (!lote.trim()) return;
@@ -66,9 +92,27 @@ export default function HistoricoLotesPage() {
       </div>
 
       {!buscou && !buscando && (
-        <p style={{ color: 'var(--color-gray)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
+        <p style={{ color: 'var(--color-gray)', fontSize: '0.85rem', marginBottom: '0.75rem' }}>
           Digite o número do lote para visualizar todos os apontamentos fermentativos registrados.
         </p>
+      )}
+
+      {lotesDisponiveis.length > 0 && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+          <span style={{ fontSize: '0.85rem', color: 'var(--color-gray)' }}>Lotes disponíveis:</span>
+          {lotesDisponiveis.map(l => (
+            <button key={l} onClick={() => buscarLote(l)}
+              style={{
+                padding: '0.25rem 0.75rem', borderRadius: 20, fontSize: '0.8rem', fontFamily: 'inherit',
+                fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s ease',
+                background: lote === l ? 'var(--color-yellow)' : 'rgba(255,197,36,0.12)',
+                color: lote === l ? '#1a1a1a' : 'var(--color-yellow)',
+                border: '1px solid rgba(255,197,36,0.3)',
+              }}>
+              {l}
+            </button>
+          ))}
+        </div>
       )}
 
       {buscando && <LoadingSpinner />}
