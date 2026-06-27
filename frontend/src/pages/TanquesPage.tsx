@@ -13,6 +13,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import iconEditar from '@/assets/icons/manutencao.svg';
+import iconRemover from '@/assets/icons/Frame 116.svg';
 
 export default function TanquesPage() {
   const [tanques, setTanques] = useState<TanqueResponse[]>([]);
@@ -170,8 +172,14 @@ export default function TanquesPage() {
                         </div>
                       ) : (
                         <div className="flex gap-2">
-                          <Button size="sm" variant="outline" onClick={() => editar(t)}>Editar</Button>
-                          <Button size="sm" variant="destructive" onClick={() => setConfirmandoExclusao(t.id)}>Remover</Button>
+                          <Button size="sm" variant="outline" onClick={() => editar(t)}>
+                            <img src={iconEditar} alt="" width={16} height={16} />
+                            Editar
+                          </Button>
+                          <Button size="sm" variant="destructive" onClick={() => setConfirmandoExclusao(t.id)}>
+                            <img src={iconRemover} alt="" width={16} height={16} />
+                            Remover
+                          </Button>
                         </div>
                       )}
                     </TableCell>

@@ -13,6 +13,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import iconEditar from '@/assets/icons/manutencao.svg';
+import iconRemover from '@/assets/icons/Frame 116.svg';
 
 export default function CervejasPage() {
   const [cervejas, setCervejas] = useState<CervejaResponse[]>([]);
@@ -165,8 +167,14 @@ export default function CervejasPage() {
                         </div>
                       ) : (
                         <div className="flex gap-2">
-                          <Button size="sm" variant="outline" onClick={() => editar(c)}>Editar</Button>
-                          <Button size="sm" variant="destructive" onClick={() => setConfirmandoExclusao(c.id)}>Remover</Button>
+                          <Button size="sm" variant="outline" onClick={() => editar(c)}>
+                            <img src={iconEditar} alt="" width={16} height={16} />
+                            Editar
+                          </Button>
+                          <Button size="sm" variant="destructive" onClick={() => setConfirmandoExclusao(c.id)}>
+                            <img src={iconRemover} alt="" width={16} height={16} />
+                            Remover
+                          </Button>
                         </div>
                       )}
                     </TableCell>
