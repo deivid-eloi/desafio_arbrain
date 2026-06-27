@@ -88,11 +88,14 @@ export default function CervejasPage() {
 
   return (
     <div style={{ animation: 'fadeIn 0.3s ease' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-        <h1 style={{ color: 'var(--color-gray-light)' }}>Cervejas</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.25rem' }}>
+        <div>
+          <h1 style={{ color: 'var(--color-gray-light)', marginBottom: '0.25rem' }}>Cervejas</h1>
+          <p style={{ color: 'var(--color-gray)', fontSize: '0.9rem', marginBottom: '1rem' }}>Gerencie as cervejas e seus estilos</p>
+        </div>
         {!mostrarForm && (
           <button onClick={() => { setMostrarForm(true); setErro(''); setSucesso(''); }}
-            style={{ ...btnStyle, background: 'var(--color-primary)', color: '#fff' }}>
+            style={{ ...btnStyle, background: 'var(--color-primary)', color: '#fff', marginTop: '0.25rem' }}>
             + Nova Cerveja
           </button>
         )}
@@ -139,7 +142,12 @@ export default function CervejasPage() {
         </div>
       )}
 
-      {carregando ? <LoadingSpinner /> : (
+      {carregando ? <LoadingSpinner /> : (<>
+        {cervejas.length > 0 && (
+          <p style={{ color: 'var(--color-gray)', fontSize: '0.85rem', marginBottom: '0.5rem' }}>
+            {cervejas.length} {cervejas.length === 1 ? 'item cadastrado' : 'itens cadastrados'}
+          </p>
+        )}
         <table style={{ width: '100%', borderCollapse: 'collapse', background: 'var(--color-surface)', borderRadius: 8, overflow: 'hidden', border: '1px solid var(--color-border)' }}>
           <thead>
             <tr style={{ background: 'var(--color-primary)', color: '#fff', textAlign: 'left' }}>
@@ -191,7 +199,7 @@ export default function CervejasPage() {
             ))}
           </tbody>
         </table>
-      )}
+      </>)}
     </div>
   );
 }

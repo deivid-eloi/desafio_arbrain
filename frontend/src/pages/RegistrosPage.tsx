@@ -75,7 +75,8 @@ export default function RegistrosPage() {
 
   return (
     <div style={{ animation: 'fadeIn 0.3s ease' }}>
-      <h1 style={{ marginBottom: '1rem', color: 'var(--color-gray-light)' }}>Registros de Fermentação</h1>
+      <h1 style={{ marginBottom: '0.25rem', color: 'var(--color-gray-light)' }}>Registros de Fermentação</h1>
+      <p style={{ color: 'var(--color-gray)', fontSize: '0.9rem', marginBottom: '1rem' }}>Registre e acompanhe as leituras de fermentação</p>
 
       {erro && <p style={{ color: 'var(--color-red)', marginBottom: '1rem' }}>{erro}</p>}
       {sucesso && <p style={{ color: 'var(--color-green)', marginBottom: '1rem', fontWeight: 600 }}>{sucesso}</p>}
@@ -158,7 +159,21 @@ export default function RegistrosPage() {
         </button>
       </div>
 
-      <h3 style={{ color: 'var(--color-gray-light)', marginBottom: '0.75rem' }}>Registros Recentes</h3>
+      <div style={{
+        background: 'rgba(255,197,36,0.08)', borderRadius: 6, padding: '0.75rem 1rem', marginBottom: '1.25rem',
+        border: '1px solid rgba(255,197,36,0.15)', fontSize: '0.85rem', color: 'var(--color-gray-light)',
+      }}>
+        A classificação é calculada automaticamente com base nos parâmetros definidos para cada cerveja.
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+        <h3 style={{ color: 'var(--color-gray-light)' }}>Registros Recentes</h3>
+        {registros.length > 0 && (
+          <span style={{ color: 'var(--color-gray)', fontSize: '0.85rem' }}>
+            {registros.length} {registros.length === 1 ? 'registro' : 'registros'}
+          </span>
+        )}
+      </div>
 
       {carregando ? <LoadingSpinner /> : (
         <table style={{ width: '100%', borderCollapse: 'collapse', background: 'var(--color-surface)', borderRadius: 8, overflow: 'hidden', fontSize: '0.85rem', border: '1px solid var(--color-border)' }}>

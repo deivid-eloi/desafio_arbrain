@@ -93,7 +93,8 @@ export default function ParametrosPage() {
 
   return (
     <div style={{ animation: 'fadeIn 0.3s ease' }}>
-      <h1 style={{ marginBottom: '1rem', color: 'var(--color-gray-light)' }}>Parâmetros Fermentativos</h1>
+      <h1 style={{ marginBottom: '0.25rem', color: 'var(--color-gray-light)' }}>Parâmetros Fermentativos</h1>
+      <p style={{ color: 'var(--color-gray)', fontSize: '0.9rem', marginBottom: '1rem' }}>Configure os limites aceitáveis por cerveja</p>
 
       {erro && <p style={{ color: 'var(--color-red)', marginBottom: '1rem' }}>{erro}</p>}
       {sucesso && <p style={{ color: 'var(--color-green)', marginBottom: '1rem', fontWeight: 600 }}>{sucesso}</p>}
@@ -119,7 +120,7 @@ export default function ParametrosPage() {
         </select>
       </div>
 
-      {cervejaId && (
+      {cervejaId && (<>
         <div style={{
           background: 'var(--color-surface)',
           padding: '1.25rem', borderRadius: 8,
@@ -160,7 +161,30 @@ export default function ParametrosPage() {
             {salvando ? 'Salvando...' : 'Salvar Parâmetros'}
           </button>
         </div>
-      )}
+
+        {jaExiste && (
+          <div style={{
+            background: 'var(--color-surface)', borderRadius: 8, padding: '1.25rem', marginTop: '1rem',
+            border: '1px solid var(--color-border)', borderLeft: '4px solid var(--color-green)',
+          }}>
+            <h4 style={{ color: 'var(--color-gray-light)', marginBottom: '0.75rem', fontSize: '0.9rem' }}>Parâmetros Atuais</h4>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem' }}>
+              <div>
+                <p style={{ fontSize: '0.75rem', color: 'var(--color-gray)', marginBottom: 2 }}>Temperatura</p>
+                <p style={{ color: 'var(--color-gray-light)', fontSize: '0.9rem' }}>{form.temperaturaMinima} – {form.temperaturaMaxima} °C</p>
+              </div>
+              <div>
+                <p style={{ fontSize: '0.75rem', color: 'var(--color-gray)', marginBottom: 2 }}>pH</p>
+                <p style={{ color: 'var(--color-gray-light)', fontSize: '0.9rem' }}>{form.phMinimo} – {form.phMaximo}</p>
+              </div>
+              <div>
+                <p style={{ fontSize: '0.75rem', color: 'var(--color-gray)', marginBottom: 2 }}>Extrato</p>
+                <p style={{ color: 'var(--color-gray-light)', fontSize: '0.9rem' }}>{form.extratoPMinimo} – {form.extratoPMaximo} °P</p>
+              </div>
+            </div>
+          </div>
+        )}
+      </>)}
     </div>
   );
 }

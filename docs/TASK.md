@@ -74,6 +74,7 @@ Core 100% funcional. Restam apenas deploy e respostas do desafio.
 - [x] Testar todos os fluxos manualmente (clean-slate Docker: down -v → up --build → full CRUD → classificação 3/3 → dashboard → histórico ✓)
 - [x] Auditoria completa do codebase — backend e frontend
 - [x] Melhorias visuais e UX — dark theme, animações, loading states, confirmação inline, empty states
+- [x] Melhorias de layout e densidade — subtítulos, contadores, seções extras no dashboard, resumos contextuais
 - [ ] Finalizar respostas às 4 perguntas do desafio
 - [ ] Fazer commit final e enviar link por e-mail
 
