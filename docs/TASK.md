@@ -75,6 +75,7 @@ Core 100% funcional. Restam apenas deploy e respostas do desafio.
 - [x] Auditoria completa do codebase — backend e frontend
 - [x] Melhorias visuais e UX — dark theme, animações, loading states, confirmação inline, empty states
 - [x] Melhorias de layout e densidade — subtítulos, contadores, seções extras no dashboard, resumos contextuais
+- [x] Seed data — 3 cervejas, 3 tanques, parâmetros, 8 registros com classificação automática via RegistrosService
 - [ ] Finalizar respostas às 4 perguntas do desafio
 - [ ] Fazer commit final e enviar link por e-mail
 

@@ -96,7 +96,7 @@ public class RegistrosService
     //   Temperatura fora da faixa → ForaDoPadrao
     //   pH ou extrato fora da faixa → Atencao
     //   Tudo dentro → DentroDopadrao
-    private static ClassificacaoRegistro Classificar(
+    internal static ClassificacaoRegistro Classificar(
         RegistroRequest request, ParametrosFermentativos parametros)
     {
         bool temperaturaFora =
