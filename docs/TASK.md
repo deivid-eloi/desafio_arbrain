@@ -14,11 +14,11 @@ Core 100% funcional. Restam apenas deploy e respostas do desafio.
 ## Status do Sistema
 
 - Banco de dados: PostgreSQL 16 via Docker, migrations aplicadas automaticamente na inicialização
-- Backend: **completo** — todos os endpoints do CLAUDE.md implementados e testados. Classificação automática funcionando no RegistrosService.
+- Backend: **completo** — todos os endpoints do CLAUDE.md implementados e testados. Classificação automática funcionando no RegistrosService (lógica pura extraída para `ClassificacaoHelper`, fonte única de verdade).
 - Frontend: **completo** — 6 páginas (Dashboard, Cervejas, Tanques, Parâmetros, Registros, Histórico). Componentes migrados para **shadcn/ui** sobre **Tailwind CSS v4**, mantendo a paleta ArBrain dominante (tokens do shadcn remapeados em index.css). Ícones SVG na navegação e nas ações de tabela. Dark theme, animações, loading states, confirmação inline de exclusão. Gráfico de evolução do lote (Temperatura, pH e Extrato ao longo do tempo) na página de Histórico via **Recharts**, com faixas de referência dos parâmetros da cerveja.
 - Docker: **completo** — `docker compose up --build` sobe os 3 serviços (postgres + backend + frontend). Healthcheck no postgres, auto-migration, nginx com proxy reverso.
 - README: **completo** — instruções Docker e local, stack, endpoints, variáveis de ambiente.
-- Testes automatizados: não incluso (dívida técnica intencional, documentada no SPECS.md)
+- Testes automatizados: **regra de negócio central coberta** — projeto xUnit `backend/BrewControl.Tests` com 5 testes de unidade da classificação automática (`ClassificacaoHelper`), isolados (sem banco/HTTP). Demais camadas seguem sem testes (dívida técnica intencional, documentada no SPECS.md)
 
 ---
 
@@ -79,6 +79,7 @@ Core 100% funcional. Restam apenas deploy e respostas do desafio.
 - [x] Refatoração do frontend para shadcn/ui sobre Tailwind CSS v4 — Button, Card, Table, Badge (variantes de classificação), Input, Select, Textarea, Separator; paleta ArBrain mapeada nos tokens semânticos; `tsc -b` sem erros; build Docker do frontend rebuildado e validado (serve em :5173, proxy /api operante)
 - [x] Ícones SVG (de `src/assets/icons/`) — navegação na sidebar (opacidade 0.85 → 1 em ativo/hover) e botões Editar/Remover (16×16); importados como asset URLs do Vite (`import ... from '@/assets/icons/*.svg'`); `tsc -b` limpo; Docker do frontend rebuildado
 - [x] Gráfico "Evolução do Lote" na página de Histórico (Recharts) — `LineChart`/`ResponsiveContainer` (largura total, 300px), três linhas (Temperatura `#FA9897`, pH `#FFC524`, Extrato `#9CDA97`) com eixo Y auto-escalado por métrica, eixo X `dd/MM HH:mm`, `Legend` + `Tooltip`, e `ReferenceLine` de mín/máx a partir de `GET /api/cervejas/{id}/parametros`; renderizado apenas quando há resultados, sem nova chamada para os dados do gráfico; `tsc -b` limpo; Docker do frontend rebuildado
+- [x] Testes de unidade da classificação automática — projeto xUnit `backend/BrewControl.Tests` (net9.0) com 5 testes cobrindo todos os cenários (dentro, pH/extrato fora → atenção, temperatura fora → fora, prioridade da temperatura); lógica pura extraída para `ClassificacaoHelper` (fonte única, sem dependência de banco/HTTP) e `RegistrosService.Classificar` passa a delegar; `dotnet test` verde (5/5)
 - [ ] Finalizar respostas às 4 perguntas do desafio
 - [ ] Fazer commit final e enviar link por e-mail
 
@@ -111,7 +112,7 @@ Core 100% funcional. Restam apenas deploy e respostas do desafio.
 ## Dívida Técnica Intencional
 
 - Sem autenticação (decisão de escopo, documentada no SPECS.md)
-- Sem testes automatizados no MVP (documentado nas respostas do desafio)
+- Cobertura de testes focada na regra de negócio central (classificação automática, 5 testes xUnit); demais camadas sem testes no MVP (documentado nas respostas do desafio)
 - Sem versionamento de API (arquitetura preparada para suportar no futuro)
 
 ---
