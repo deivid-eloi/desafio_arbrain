@@ -3,19 +3,18 @@ import type { RegistroResponse } from '../types';
 import { registrosService } from '../services/registrosService';
 import ClassificacaoBadge from '../components/ClassificacaoBadge';
 import LoadingSpinner from '../components/LoadingSpinner';
-
-const inputStyle: React.CSSProperties = {
-  padding: '0.5rem', borderRadius: 4,
-  border: '1px solid var(--color-border)', fontFamily: 'inherit', fontSize: '0.9rem',
-  background: 'var(--color-bg)', color: 'var(--color-gray-light)',
-  outline: 'none', transition: 'border-color 0.2s ease',
-};
-
-const btnStyle: React.CSSProperties = {
-  padding: '0.5rem 1rem', borderRadius: 4, border: 'none',
-  cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem',
-  transition: 'all 0.2s ease',
-};
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 export default function HistoricoLotesPage() {
   const [lote, setLote] = useState('');
@@ -27,8 +26,8 @@ export default function HistoricoLotesPage() {
 
   useEffect(() => {
     registrosService.listarTodos()
-      .then(todos => {
-        const unicos = [...new Set(todos.map(r => r.numeroDeLote))];
+      .then((todos) => {
+        const unicos = [...new Set(todos.map((r) => r.numeroDeLote))];
         setLotesDisponiveis(unicos.sort());
       })
       .catch(() => {});
@@ -66,51 +65,56 @@ export default function HistoricoLotesPage() {
     }
   };
 
-  const dentro = registros.filter(r => r.classificacao === 'DentroDopadrao').length;
-  const atencao = registros.filter(r => r.classificacao === 'Atencao').length;
-  const fora = registros.filter(r => r.classificacao === 'ForaDoPadrao').length;
+  const dentro = registros.filter((r) => r.classificacao === 'DentroDopadrao').length;
+  const atencao = registros.filter((r) => r.classificacao === 'Atencao').length;
+  const fora = registros.filter((r) => r.classificacao === 'ForaDoPadrao').length;
 
   return (
-    <div style={{ animation: 'fadeIn 0.3s ease' }}>
-      <h1 style={{ marginBottom: '0.25rem', color: 'var(--color-gray-light)' }}>Histórico de Lotes</h1>
-      <p style={{ color: 'var(--color-gray)', fontSize: '0.9rem', marginBottom: '1rem' }}>Consulte o histórico completo de apontamentos por lote</p>
+    <div className="animate-fade-in">
+      <h1 className="text-2xl font-bold text-foreground">Histórico de Lotes</h1>
+      <p className="mt-1 mb-4 text-sm text-muted-foreground">
+        Consulte o histórico completo de apontamentos por lote
+      </p>
 
-      {erro && <p style={{ color: 'var(--color-red)', marginBottom: '1rem' }}>{erro}</p>}
+      {erro && <p className="mb-4 text-sm text-(--color-red)">{erro}</p>}
 
-      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
-        <input style={{ ...inputStyle, width: 300 }}
+      <div className="mb-2 flex gap-2">
+        <Input
+          className="w-75"
           placeholder="Número do Lote (ex: LOTE-001)"
           value={lote}
-          onFocus={e => e.target.style.borderColor = 'var(--color-yellow)'}
-          onBlur={e => e.target.style.borderColor = 'var(--color-border)'}
-          onChange={e => setLote(e.target.value)}
-          onKeyDown={e => { if (e.key === 'Enter') buscar(); }} />
-        <button onClick={buscar} disabled={buscando}
-          style={{ ...btnStyle, background: 'var(--color-primary)', color: '#fff', opacity: buscando ? 0.6 : 1 }}>
+          onChange={(e) => setLote(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') buscar(); }}
+        />
+        <Button onClick={buscar} disabled={buscando}>
           {buscando ? 'Buscando...' : 'Buscar'}
-        </button>
+        </Button>
       </div>
 
       {!buscou && !buscando && (
-        <p style={{ color: 'var(--color-gray)', fontSize: '0.85rem', marginBottom: '0.75rem' }}>
+        <p className="mb-3 text-sm text-muted-foreground">
           Digite o número do lote para visualizar todos os apontamentos fermentativos registrados.
         </p>
       )}
 
       {lotesDisponiveis.length > 0 && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
-          <span style={{ fontSize: '0.85rem', color: 'var(--color-gray)' }}>Lotes disponíveis:</span>
-          {lotesDisponiveis.map(l => (
-            <button key={l} onClick={() => buscarLote(l)}
-              style={{
-                padding: '0.25rem 0.75rem', borderRadius: 20, fontSize: '0.8rem', fontFamily: 'inherit',
-                fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s ease',
-                background: lote === l ? 'var(--color-yellow)' : 'rgba(255,197,36,0.12)',
-                color: lote === l ? '#1a1a1a' : 'var(--color-yellow)',
-                border: '1px solid rgba(255,197,36,0.3)',
-              }}>
+        <div className="mb-6 flex flex-wrap items-center gap-2">
+          <span className="text-sm text-muted-foreground">Lotes disponíveis:</span>
+          {lotesDisponiveis.map((l) => (
+            <Button
+              key={l}
+              size="sm"
+              variant={lote === l ? 'default' : 'outline'}
+              onClick={() => buscarLote(l)}
+              className={cn(
+                'rounded-full',
+                lote === l
+                  ? 'bg-(--color-yellow) text-[#1a1a1a] hover:bg-(--color-yellow)/90'
+                  : 'border-(--color-yellow)/30 text-(--color-yellow) hover:bg-(--color-yellow)/10 hover:text-(--color-yellow)',
+              )}
+            >
               {l}
-            </button>
+            </Button>
           ))}
         </div>
       )}
@@ -118,74 +122,74 @@ export default function HistoricoLotesPage() {
       {buscando && <LoadingSpinner />}
 
       {buscou && registros.length === 0 && (
-        <p style={{ color: 'var(--color-gray)', marginTop: '1rem' }}>Nenhum registro encontrado para o lote "{lote}".</p>
+        <p className="mt-4 text-muted-foreground">Nenhum registro encontrado para o lote "{lote}".</p>
       )}
 
       {buscou && registros.length > 0 && (
         <>
-          <div style={{
-            background: 'var(--color-surface)', borderRadius: 8, padding: '1rem 1.25rem', marginTop: '1rem', marginBottom: '1rem',
-            border: '1px solid var(--color-border)',
-            display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '1rem',
-          }}>
-            <div>
-              <p style={{ fontSize: '0.75rem', color: 'var(--color-gray)', marginBottom: 2 }}>Lote</p>
-              <p style={{ color: 'var(--color-yellow)', fontWeight: 600 }}>{registros[0].numeroDeLote}</p>
-            </div>
-            <div>
-              <p style={{ fontSize: '0.75rem', color: 'var(--color-gray)', marginBottom: 2 }}>Cerveja</p>
-              <p style={{ color: 'var(--color-gray-light)' }}>{registros[0].cervejaNome}</p>
-            </div>
-            <div>
-              <p style={{ fontSize: '0.75rem', color: 'var(--color-gray)', marginBottom: 2 }}>Tanque</p>
-              <p style={{ color: 'var(--color-gray-light)' }}>{registros[0].tanqueNome}</p>
-            </div>
-            <div>
-              <p style={{ fontSize: '0.75rem', color: 'var(--color-gray)', marginBottom: 2 }}>Total</p>
-              <p style={{ color: 'var(--color-gray-light)', fontWeight: 600 }}>{registros.length} registros</p>
-            </div>
-            <div>
-              <p style={{ fontSize: '0.75rem', color: 'var(--color-gray)', marginBottom: 2 }}>Classificação</p>
-              <p style={{ fontSize: '0.85rem' }}>
-                <span style={{ color: 'var(--color-green)' }}>{dentro} dentro</span>
-                {' · '}
-                <span style={{ color: 'var(--color-yellow)' }}>{atencao} atenção</span>
-                {' · '}
-                <span style={{ color: 'var(--color-red)' }}>{fora} fora</span>
-              </p>
-            </div>
-          </div>
+          <Card className="mt-4 mb-4">
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
+                <div>
+                  <p className="mb-0.5 text-xs text-muted-foreground">Lote</p>
+                  <p className="font-semibold text-(--color-yellow)">{registros[0].numeroDeLote}</p>
+                </div>
+                <div>
+                  <p className="mb-0.5 text-xs text-muted-foreground">Cerveja</p>
+                  <p className="text-foreground">{registros[0].cervejaNome}</p>
+                </div>
+                <div>
+                  <p className="mb-0.5 text-xs text-muted-foreground">Tanque</p>
+                  <p className="text-foreground">{registros[0].tanqueNome}</p>
+                </div>
+                <div>
+                  <p className="mb-0.5 text-xs text-muted-foreground">Total</p>
+                  <p className="font-semibold text-foreground">{registros.length} registros</p>
+                </div>
+                <div>
+                  <p className="mb-0.5 text-xs text-muted-foreground">Classificação</p>
+                  <p className="text-sm">
+                    <span className="text-(--color-green)">{dentro} dentro</span>
+                    {' · '}
+                    <span className="text-(--color-yellow)">{atencao} atenção</span>
+                    {' · '}
+                    <span className="text-(--color-red)">{fora} fora</span>
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-          <table style={{ width: '100%', borderCollapse: 'collapse', background: 'var(--color-surface)', borderRadius: 8, overflow: 'hidden', fontSize: '0.85rem', border: '1px solid var(--color-border)' }}>
-            <thead>
-              <tr style={{ background: 'var(--color-primary)', color: '#fff', textAlign: 'left' }}>
-                <th style={{ padding: '0.5rem 0.75rem' }}>Data/Hora</th>
-                <th style={{ padding: '0.5rem 0.75rem' }}>Cerveja</th>
-                <th style={{ padding: '0.5rem 0.75rem' }}>Tanque</th>
-                <th style={{ padding: '0.5rem 0.75rem' }}>Temp (°C)</th>
-                <th style={{ padding: '0.5rem 0.75rem' }}>pH</th>
-                <th style={{ padding: '0.5rem 0.75rem' }}>Extrato (°P)</th>
-                <th style={{ padding: '0.5rem 0.75rem' }}>Observações</th>
-                <th style={{ padding: '0.5rem 0.75rem' }}>Classificação</th>
-              </tr>
-            </thead>
-            <tbody>
-              {registros.map(r => (
-                <tr key={r.id} style={{ borderBottom: '1px solid var(--color-border)', transition: 'background 0.2s ease' }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                  <td style={{ padding: '0.5rem 0.75rem' }}>{new Date(r.dataHora).toLocaleString('pt-BR')}</td>
-                  <td style={{ padding: '0.5rem 0.75rem' }}>{r.cervejaNome}</td>
-                  <td style={{ padding: '0.5rem 0.75rem' }}>{r.tanqueNome}</td>
-                  <td style={{ padding: '0.5rem 0.75rem' }}>{r.temperatura}</td>
-                  <td style={{ padding: '0.5rem 0.75rem' }}>{r.ph}</td>
-                  <td style={{ padding: '0.5rem 0.75rem' }}>{r.extrato}</td>
-                  <td style={{ padding: '0.5rem 0.75rem' }}>{r.observacoes ?? '—'}</td>
-                  <td style={{ padding: '0.5rem 0.75rem' }}><ClassificacaoBadge classificacao={r.classificacao} /></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-(--color-primary) hover:bg-(--color-primary)">
+                  <TableHead className="text-white">Data/Hora</TableHead>
+                  <TableHead className="text-white">Cerveja</TableHead>
+                  <TableHead className="text-white">Tanque</TableHead>
+                  <TableHead className="text-white">Temp (°C)</TableHead>
+                  <TableHead className="text-white">pH</TableHead>
+                  <TableHead className="text-white">Extrato (°P)</TableHead>
+                  <TableHead className="text-white">Observações</TableHead>
+                  <TableHead className="text-white">Classificação</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {registros.map((r) => (
+                  <TableRow key={r.id}>
+                    <TableCell>{new Date(r.dataHora).toLocaleString('pt-BR')}</TableCell>
+                    <TableCell>{r.cervejaNome}</TableCell>
+                    <TableCell>{r.tanqueNome}</TableCell>
+                    <TableCell>{r.temperatura}</TableCell>
+                    <TableCell>{r.ph}</TableCell>
+                    <TableCell>{r.extrato}</TableCell>
+                    <TableCell>{r.observacoes ?? '—'}</TableCell>
+                    <TableCell><ClassificacaoBadge classificacao={r.classificacao} /></TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </>
       )}
     </div>

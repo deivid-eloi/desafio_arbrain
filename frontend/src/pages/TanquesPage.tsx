@@ -2,19 +2,17 @@ import { useEffect, useState } from 'react';
 import type { TanqueResponse, TanqueRequest } from '../types';
 import { tanquesService } from '../services/tanquesService';
 import LoadingSpinner from '../components/LoadingSpinner';
-
-const inputStyle: React.CSSProperties = {
-  width: '100%', padding: '0.5rem', borderRadius: 4,
-  border: '1px solid var(--color-border)', fontFamily: 'inherit', fontSize: '0.9rem',
-  background: 'var(--color-bg)', color: 'var(--color-gray-light)',
-  outline: 'none', transition: 'border-color 0.2s ease',
-};
-
-const btnStyle: React.CSSProperties = {
-  padding: '0.5rem 1rem', borderRadius: 4, border: 'none',
-  cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem',
-  transition: 'all 0.2s ease',
-};
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 export default function TanquesPage() {
   const [tanques, setTanques] = useState<TanqueResponse[]>([]);
@@ -87,119 +85,103 @@ export default function TanquesPage() {
   };
 
   return (
-    <div style={{ animation: 'fadeIn 0.3s ease' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.25rem' }}>
+    <div className="animate-fade-in">
+      <div className="mb-4 flex items-start justify-between">
         <div>
-          <h1 style={{ color: 'var(--color-gray-light)', marginBottom: '0.25rem' }}>Tanques</h1>
-          <p style={{ color: 'var(--color-gray)', fontSize: '0.9rem', marginBottom: '1rem' }}>Gerencie os tanques de fermentação</p>
+          <h1 className="text-2xl font-bold text-foreground">Tanques</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Gerencie os tanques de fermentação</p>
         </div>
         {!mostrarForm && (
-          <button onClick={() => { setMostrarForm(true); setErro(''); setSucesso(''); }}
-            style={{ ...btnStyle, background: 'var(--color-primary)', color: '#fff', marginTop: '0.25rem' }}>
+          <Button onClick={() => { setMostrarForm(true); setErro(''); setSucesso(''); }}>
             + Novo Tanque
-          </button>
+          </Button>
         )}
       </div>
 
-      {erro && <p style={{ color: 'var(--color-red)', marginBottom: '1rem' }}>{erro}</p>}
-      {sucesso && <p style={{ color: 'var(--color-green)', marginBottom: '1rem', fontWeight: 600 }}>{sucesso}</p>}
+      {erro && <p className="mb-4 text-sm text-(--color-red)">{erro}</p>}
+      {sucesso && <p className="mb-4 text-sm font-semibold text-(--color-green)">{sucesso}</p>}
 
       {mostrarForm && (
-        <div style={{
-          background: 'var(--color-surface)',
-          padding: '1.25rem', borderRadius: 8, marginBottom: '1.5rem',
-          border: '1px solid var(--color-border)',
-        }}>
-          <h3 style={{ marginBottom: '1rem', color: 'var(--color-gray-light)' }}>
-            {editandoId ? 'Editar Tanque' : 'Novo Tanque'}
-          </h3>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-            <div>
-              <label style={{ fontSize: '0.85rem', color: 'var(--color-gray)' }}>Nome</label>
-              <input style={inputStyle} value={form.nome}
-                onFocus={e => e.target.style.borderColor = 'var(--color-yellow)'}
-                onBlur={e => e.target.style.borderColor = 'var(--color-border)'}
-                onChange={e => setForm({ ...form, nome: e.target.value })} />
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>{editandoId ? 'Editar Tanque' : 'Novo Tanque'}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <label className="text-sm text-muted-foreground">Nome</label>
+                <Input value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-sm text-muted-foreground">Capacidade (litros)</label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  value={form.capacidade || ''}
+                  onChange={(e) => setForm({ ...form, capacidade: parseFloat(e.target.value) || 0 })}
+                />
+              </div>
             </div>
-            <div>
-              <label style={{ fontSize: '0.85rem', color: 'var(--color-gray)' }}>Capacidade (litros)</label>
-              <input type="number" step="0.01" style={inputStyle} value={form.capacidade || ''}
-                onFocus={e => e.target.style.borderColor = 'var(--color-yellow)'}
-                onBlur={e => e.target.style.borderColor = 'var(--color-border)'}
-                onChange={e => setForm({ ...form, capacidade: parseFloat(e.target.value) || 0 })} />
+            <div className="mt-4 flex gap-2">
+              <Button onClick={salvar} disabled={salvando}>
+                {salvando ? 'Salvando...' : 'Salvar'}
+              </Button>
+              <Button variant="outline" onClick={cancelar}>Cancelar</Button>
             </div>
-          </div>
-          <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem' }}>
-            <button onClick={salvar} disabled={salvando}
-              style={{ ...btnStyle, background: 'var(--color-primary)', color: '#fff', opacity: salvando ? 0.6 : 1 }}>
-              {salvando ? 'Salvando...' : 'Salvar'}
-            </button>
-            <button onClick={cancelar}
-              style={{ ...btnStyle, background: 'transparent', color: 'var(--color-gray)', border: '1px solid var(--color-border)' }}>
-              Cancelar
-            </button>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       )}
 
-      {carregando ? <LoadingSpinner /> : (<>
-        {tanques.length > 0 && (
-          <p style={{ color: 'var(--color-gray)', fontSize: '0.85rem', marginBottom: '0.5rem' }}>
-            {tanques.length} {tanques.length === 1 ? 'item cadastrado' : 'itens cadastrados'}
-          </p>
-        )}
-        <table style={{ width: '100%', borderCollapse: 'collapse', background: 'var(--color-surface)', borderRadius: 8, overflow: 'hidden', border: '1px solid var(--color-border)' }}>
-          <thead>
-            <tr style={{ background: 'var(--color-primary)', color: '#fff', textAlign: 'left' }}>
-              <th style={{ padding: '0.6rem 1rem' }}>ID</th>
-              <th style={{ padding: '0.6rem 1rem' }}>Nome</th>
-              <th style={{ padding: '0.6rem 1rem' }}>Capacidade (L)</th>
-              <th style={{ padding: '0.6rem 1rem', width: 180 }}>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tanques.length === 0 ? (
-              <tr><td colSpan={4} style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-gray)' }}>
-                Nenhum tanque cadastrado. Clique em <strong>+ Novo Tanque</strong> para começar.
-              </td></tr>
-            ) : tanques.map(t => (
-              <tr key={t.id} style={{ borderBottom: '1px solid var(--color-border)', transition: 'background 0.2s ease' }}
-                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                <td style={{ padding: '0.5rem 1rem' }}>{t.id}</td>
-                <td style={{ padding: '0.5rem 1rem' }}>{t.nome}</td>
-                <td style={{ padding: '0.5rem 1rem' }}>{t.capacidade}</td>
-                <td style={{ padding: '0.5rem 1rem' }}>
-                  {confirmandoExclusao === t.id ? (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--color-red)' }}>Confirmar?</span>
-                      <button onClick={() => remover(t.id)}
-                        style={{ ...btnStyle, background: 'var(--color-red)', color: '#1a1a1a', fontSize: '0.8rem', padding: '0.3rem 0.6rem' }}>
-                        Sim
-                      </button>
-                      <button onClick={() => setConfirmandoExclusao(null)}
-                        style={{ ...btnStyle, background: 'transparent', color: 'var(--color-gray)', fontSize: '0.8rem', padding: '0.3rem 0.6rem', border: '1px solid var(--color-border)' }}>
-                        Não
-                      </button>
-                    </div>
-                  ) : (
-                    <div style={{ display: 'flex', gap: '0.4rem' }}>
-                      <button onClick={() => editar(t)}
-                        style={{ ...btnStyle, background: 'var(--color-yellow)', color: '#1a1a1a', fontSize: '0.8rem', padding: '0.3rem 0.6rem' }}>
-                        Editar
-                      </button>
-                      <button onClick={() => setConfirmandoExclusao(t.id)}
-                        style={{ ...btnStyle, background: 'var(--color-red)', color: '#1a1a1a', fontSize: '0.8rem', padding: '0.3rem 0.6rem' }}>
-                        Remover
-                      </button>
-                    </div>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </>)}
+      {carregando ? <LoadingSpinner /> : (
+        <>
+          {tanques.length > 0 && (
+            <p className="mb-2 text-sm text-muted-foreground">
+              {tanques.length} {tanques.length === 1 ? 'item cadastrado' : 'itens cadastrados'}
+            </p>
+          )}
+          <div className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-(--color-primary) hover:bg-(--color-primary)">
+                  <TableHead className="text-white">ID</TableHead>
+                  <TableHead className="text-white">Nome</TableHead>
+                  <TableHead className="text-white">Capacidade (L)</TableHead>
+                  <TableHead className="w-50 text-white">Ações</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {tanques.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={4} className="py-8 text-center text-muted-foreground">
+                      Nenhum tanque cadastrado. Clique em <strong>+ Novo Tanque</strong> para começar.
+                    </TableCell>
+                  </TableRow>
+                ) : tanques.map((t) => (
+                  <TableRow key={t.id}>
+                    <TableCell>{t.id}</TableCell>
+                    <TableCell>{t.nome}</TableCell>
+                    <TableCell>{t.capacidade}</TableCell>
+                    <TableCell>
+                      {confirmandoExclusao === t.id ? (
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-(--color-red)">Confirmar?</span>
+                          <Button size="sm" variant="destructive" onClick={() => remover(t.id)}>Sim</Button>
+                          <Button size="sm" variant="ghost" onClick={() => setConfirmandoExclusao(null)}>Não</Button>
+                        </div>
+                      ) : (
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="outline" onClick={() => editar(t)}>Editar</Button>
+                          <Button size="sm" variant="destructive" onClick={() => setConfirmandoExclusao(t.id)}>Remover</Button>
+                        </div>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </>
+      )}
     </div>
   );
 }

@@ -1,5 +1,19 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+  Design System ArBrain — paleta DOMINANTE (fonte de verdade: /docs/CLAUDE.md).
+  shadcn/ui é apenas a fundação de componentes. Os tokens semânticos do shadcn
+  abaixo são remapeados para a identidade visual ArBrain (tema escuro), de modo
+  que todos os componentes herdem a paleta sem perder a marca.
+*/
 :root {
-  /* Design System ArBrain — ver /docs/CLAUDE.md */
+  color-scheme: dark;
+
+  /* Paleta ArBrain (não alterar — referência em /docs/CLAUDE.md) */
   --color-bg: #1d1d2d;
   --color-primary: #063852;
   --color-secondary: #acbbcd;
@@ -11,26 +25,112 @@
 
   --color-surface: #252535;
   --color-border: rgba(255, 255, 255, 0.08);
+
+  /*
+    Tokens semânticos do shadcn → ArBrain.
+    Obs.: --primary, --secondary e --border usam valores literais porque seus
+    nomes de tema no Tailwind v4 (--color-primary/secondary/border) colidem com
+    a paleta ArBrain; literais evitam referência circular no namespace de cores.
+  */
+  --background: var(--color-bg);
+  --foreground: var(--color-gray-light);
+  --card: var(--color-surface);
+  --card-foreground: var(--color-gray-light);
+  --popover: var(--color-surface);
+  --popover-foreground: var(--color-gray-light);
+  --primary: #063852;
+  --primary-foreground: #ffffff;
+  --secondary: #2f2f45;
+  --secondary-foreground: var(--color-gray-light);
+  --muted: #2c2c3e;
+  --muted-foreground: var(--color-gray);
+  --accent: rgba(255, 255, 255, 0.06);
+  --accent-foreground: var(--color-gray-light);
+  --destructive: var(--color-red);
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.14);
+  --ring: var(--color-yellow);
+  --radius: 0.5rem;
+
+  /* Barra lateral (mantém a identidade da navegação) */
+  --sidebar: var(--color-primary);
+  --sidebar-foreground: var(--color-gray-light);
+  --sidebar-primary: var(--color-yellow);
+  --sidebar-primary-foreground: #1a1a1a;
+  --sidebar-accent: rgba(255, 197, 36, 0.12);
+  --sidebar-accent-foreground: var(--color-yellow);
+  --sidebar-border: rgba(255, 255, 255, 0.12);
+  --sidebar-ring: var(--color-yellow);
+
+  /* Charts — mapeados para a paleta (não utilizados no momento) */
+  --chart-1: var(--color-yellow);
+  --chart-2: var(--color-green);
+  --chart-3: var(--color-secondary);
+  --chart-4: var(--color-red);
+  --chart-5: var(--color-primary);
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: 'Montserrat', sans-serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-body {
-  font-family: 'Montserrat', sans-serif;
-  background-color: var(--color-bg);
-  color: var(--color-gray-light);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  html {
+    @apply font-sans;
+  }
+  #root {
+    min-height: 100vh;
+  }
 }
 
-#root {
-  min-height: 100vh;
-}
-
+/* Transição de entrada das páginas (preserva a animação do design original) */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -42,8 +142,8 @@ body {
   }
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease;
   }
 }

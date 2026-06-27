@@ -3,19 +3,16 @@ import type { CervejaResponse, ParametrosRequest } from '../types';
 import { cervejasService } from '../services/cervejasService';
 import { parametrosService } from '../services/parametrosService';
 import LoadingSpinner from '../components/LoadingSpinner';
-
-const inputStyle: React.CSSProperties = {
-  width: '100%', padding: '0.5rem', borderRadius: 4,
-  border: '1px solid var(--color-border)', fontFamily: 'inherit', fontSize: '0.9rem',
-  background: 'var(--color-bg)', color: 'var(--color-gray-light)',
-  outline: 'none', transition: 'border-color 0.2s ease',
-};
-
-const btnStyle: React.CSSProperties = {
-  padding: '0.5rem 1rem', borderRadius: 4, border: 'none',
-  cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem',
-  transition: 'all 0.2s ease',
-};
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 const formVazio: ParametrosRequest = {
   temperaturaMinima: 0, temperaturaMaxima: 0,
@@ -92,99 +89,98 @@ export default function ParametrosPage() {
   if (carregando) return <LoadingSpinner />;
 
   return (
-    <div style={{ animation: 'fadeIn 0.3s ease' }}>
-      <h1 style={{ marginBottom: '0.25rem', color: 'var(--color-gray-light)' }}>Parâmetros Fermentativos</h1>
-      <p style={{ color: 'var(--color-gray)', fontSize: '0.9rem', marginBottom: '1rem' }}>Configure os limites aceitáveis por cerveja</p>
+    <div className="animate-fade-in">
+      <h1 className="text-2xl font-bold text-foreground">Parâmetros Fermentativos</h1>
+      <p className="mt-1 mb-4 text-sm text-muted-foreground">Configure os limites aceitáveis por cerveja</p>
 
-      {erro && <p style={{ color: 'var(--color-red)', marginBottom: '1rem' }}>{erro}</p>}
-      {sucesso && <p style={{ color: 'var(--color-green)', marginBottom: '1rem', fontWeight: 600 }}>{sucesso}</p>}
+      {erro && <p className="mb-4 text-sm text-(--color-red)">{erro}</p>}
+      {sucesso && <p className="mb-4 text-sm font-semibold text-(--color-green)">{sucesso}</p>}
 
-      <div style={{ marginBottom: '1.5rem' }}>
-        <label style={{ fontSize: '0.85rem', color: 'var(--color-gray)', display: 'block', marginBottom: 4 }}>
-          Selecione uma cerveja
-        </label>
-        <select
-          style={{ ...inputStyle, maxWidth: 400 }}
-          value={cervejaId ?? ''}
-          onFocus={e => e.target.style.borderColor = 'var(--color-yellow)'}
-          onBlur={e => e.target.style.borderColor = 'var(--color-border)'}
-          onChange={e => {
-            const v = parseInt(e.target.value);
-            if (v) selecionarCerveja(v);
-          }}
+      <div className="mb-6 max-w-100">
+        <label className="mb-1.5 block text-sm text-muted-foreground">Selecione uma cerveja</label>
+        <Select
+          value={cervejaId ? String(cervejaId) : undefined}
+          onValueChange={(v) => selecionarCerveja(parseInt(v))}
         >
-          <option value="">— Selecione —</option>
-          {cervejas.map(c => (
-            <option key={c.id} value={c.id}>{c.nome} ({c.estilo})</option>
-          ))}
-        </select>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="— Selecione —" />
+          </SelectTrigger>
+          <SelectContent>
+            {cervejas.map((c) => (
+              <SelectItem key={c.id} value={String(c.id)}>
+                {c.nome} ({c.estilo})
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
-      {cervejaId && (<>
-        <div style={{
-          background: 'var(--color-surface)',
-          padding: '1.25rem', borderRadius: 8,
-          border: '1px solid var(--color-border)',
-        }}>
-          <h3 style={{ marginBottom: '1rem', color: 'var(--color-gray-light)' }}>
-            {jaExiste ? 'Editar Parâmetros' : 'Definir Parâmetros'}
-          </h3>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
-            {camposParam.map(campo => (
-              <div key={campo.min}>
-                <p style={{ fontSize: '0.85rem', color: 'var(--color-gray)', marginBottom: 4 }}>{campo.label}</p>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  <div style={{ flex: 1 }}>
-                    <label style={{ fontSize: '0.75rem', color: 'var(--color-gray)' }}>Mín</label>
-                    <input type="number" step="0.01" style={inputStyle}
-                      value={form[campo.min] || ''}
-                      onFocus={e => e.target.style.borderColor = 'var(--color-yellow)'}
-                      onBlur={e => e.target.style.borderColor = 'var(--color-border)'}
-                      onChange={e => setForm({ ...form, [campo.min]: parseFloat(e.target.value) || 0 })} />
+      {cervejaId && (
+        <>
+          <Card>
+            <CardHeader>
+              <CardTitle>{jaExiste ? 'Editar Parâmetros' : 'Definir Parâmetros'}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                {camposParam.map((campo) => (
+                  <div key={campo.min}>
+                    <p className="mb-1 text-sm text-muted-foreground">{campo.label}</p>
+                    <div className="flex gap-2">
+                      <div className="flex-1 space-y-1">
+                        <label className="text-xs text-muted-foreground">Mín</label>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          value={form[campo.min] || ''}
+                          onChange={(e) => setForm({ ...form, [campo.min]: parseFloat(e.target.value) || 0 })}
+                        />
+                      </div>
+                      <div className="flex-1 space-y-1">
+                        <label className="text-xs text-muted-foreground">Máx</label>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          value={form[campo.max] || ''}
+                          onChange={(e) => setForm({ ...form, [campo.max]: parseFloat(e.target.value) || 0 })}
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <div style={{ flex: 1 }}>
-                    <label style={{ fontSize: '0.75rem', color: 'var(--color-gray)' }}>Máx</label>
-                    <input type="number" step="0.01" style={inputStyle}
-                      value={form[campo.max] || ''}
-                      onFocus={e => e.target.style.borderColor = 'var(--color-yellow)'}
-                      onBlur={e => e.target.style.borderColor = 'var(--color-border)'}
-                      onChange={e => setForm({ ...form, [campo.max]: parseFloat(e.target.value) || 0 })} />
+                ))}
+              </div>
+
+              <Button onClick={salvar} disabled={salvando} className="mt-4">
+                {salvando ? 'Salvando...' : 'Salvar Parâmetros'}
+              </Button>
+            </CardContent>
+          </Card>
+
+          {jaExiste && (
+            <Card className="mt-4 border-l-4 border-l-(--color-green)">
+              <CardHeader>
+                <CardTitle className="text-sm">Parâmetros Atuais</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                  <div>
+                    <p className="mb-0.5 text-xs text-muted-foreground">Temperatura</p>
+                    <p className="text-sm text-foreground">{form.temperaturaMinima} – {form.temperaturaMaxima} °C</p>
+                  </div>
+                  <div>
+                    <p className="mb-0.5 text-xs text-muted-foreground">pH</p>
+                    <p className="text-sm text-foreground">{form.phMinimo} – {form.phMaximo}</p>
+                  </div>
+                  <div>
+                    <p className="mb-0.5 text-xs text-muted-foreground">Extrato</p>
+                    <p className="text-sm text-foreground">{form.extratoPMinimo} – {form.extratoPMaximo} °P</p>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-
-          <button onClick={salvar} disabled={salvando}
-            style={{ ...btnStyle, background: 'var(--color-primary)', color: '#fff', marginTop: '1rem', opacity: salvando ? 0.6 : 1 }}>
-            {salvando ? 'Salvando...' : 'Salvar Parâmetros'}
-          </button>
-        </div>
-
-        {jaExiste && (
-          <div style={{
-            background: 'var(--color-surface)', borderRadius: 8, padding: '1.25rem', marginTop: '1rem',
-            border: '1px solid var(--color-border)', borderLeft: '4px solid var(--color-green)',
-          }}>
-            <h4 style={{ color: 'var(--color-gray-light)', marginBottom: '0.75rem', fontSize: '0.9rem' }}>Parâmetros Atuais</h4>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem' }}>
-              <div>
-                <p style={{ fontSize: '0.75rem', color: 'var(--color-gray)', marginBottom: 2 }}>Temperatura</p>
-                <p style={{ color: 'var(--color-gray-light)', fontSize: '0.9rem' }}>{form.temperaturaMinima} – {form.temperaturaMaxima} °C</p>
-              </div>
-              <div>
-                <p style={{ fontSize: '0.75rem', color: 'var(--color-gray)', marginBottom: 2 }}>pH</p>
-                <p style={{ color: 'var(--color-gray-light)', fontSize: '0.9rem' }}>{form.phMinimo} – {form.phMaximo}</p>
-              </div>
-              <div>
-                <p style={{ fontSize: '0.75rem', color: 'var(--color-gray)', marginBottom: 2 }}>Extrato</p>
-                <p style={{ color: 'var(--color-gray-light)', fontSize: '0.9rem' }}>{form.extratoPMinimo} – {form.extratoPMaximo} °P</p>
-              </div>
-            </div>
-          </div>
-        )}
-      </>)}
+              </CardContent>
+            </Card>
+          )}
+        </>
+      )}
     </div>
   );
 }

@@ -15,7 +15,7 @@ Core 100% funcional. Restam apenas deploy e respostas do desafio.
 
 - Banco de dados: PostgreSQL 16 via Docker, migrations aplicadas automaticamente na inicialização
 - Backend: **completo** — todos os endpoints do CLAUDE.md implementados e testados. Classificação automática funcionando no RegistrosService.
-- Frontend: **completo** — 6 páginas (Dashboard, Cervejas, Tanques, Parâmetros, Registros, Histórico). Design system ArBrain aplicado. Dark theme, animações, loading states, confirmação inline de exclusão.
+- Frontend: **completo** — 6 páginas (Dashboard, Cervejas, Tanques, Parâmetros, Registros, Histórico). Componentes migrados para **shadcn/ui** sobre **Tailwind CSS v4**, mantendo a paleta ArBrain dominante (tokens do shadcn remapeados em index.css). Dark theme, animações, loading states, confirmação inline de exclusão.
 - Docker: **completo** — `docker compose up --build` sobe os 3 serviços (postgres + backend + frontend). Healthcheck no postgres, auto-migration, nginx com proxy reverso.
 - README: **completo** — instruções Docker e local, stack, endpoints, variáveis de ambiente.
 - Testes automatizados: não incluso (dívida técnica intencional, documentada no SPECS.md)
@@ -76,6 +76,7 @@ Core 100% funcional. Restam apenas deploy e respostas do desafio.
 - [x] Melhorias visuais e UX — dark theme, animações, loading states, confirmação inline, empty states
 - [x] Melhorias de layout e densidade — subtítulos, contadores, seções extras no dashboard, resumos contextuais
 - [x] Seed data — 3 cervejas, 3 tanques, parâmetros, 8 registros com classificação automática via RegistrosService
+- [x] Refatoração do frontend para shadcn/ui sobre Tailwind CSS v4 — Button, Card, Table, Badge (variantes de classificação), Input, Select, Textarea, Separator; paleta ArBrain mapeada nos tokens semânticos; `tsc -b` sem erros; build Docker do frontend rebuildado e validado (serve em :5173, proxy /api operante)
 - [ ] Finalizar respostas às 4 perguntas do desafio
 - [ ] Fazer commit final e enviar link por e-mail
 

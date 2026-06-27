@@ -12,7 +12,7 @@ Leia este arquivo antes de qualquer ação.
 
 | Camada     | Tecnologia                        |
 |------------|-----------------------------------|
-| Frontend   | React + TypeScript (Vite)         |
+| Frontend   | React + TypeScript (Vite) + Tailwind CSS v4 + shadcn/ui |
 | Backend    | C# / .NET 9 — Web API             |
 | Banco      | PostgreSQL (Docker em dev)        |
 | ORM        | Entity Framework Core             |
@@ -34,10 +34,12 @@ desafio_arbrain/
 │       └── Data/               # DbContext e configurações do EF Core
 ├── frontend/
 │   └── src/
-│       ├── components/         # Componentes reutilizáveis
+│       ├── components/         # Componentes reutilizáveis (domínio)
+│       │   └── ui/             # Componentes base do shadcn/ui
 │       ├── pages/              # Páginas da aplicação
 │       ├── services/           # Chamadas à API (fetch/axios)
 │       ├── types/              # Tipos e interfaces TypeScript
+│       ├── lib/                # Utilitários compartilhados (ex: cn)
 │       └── utils/              # Funções utilitárias
 └── docs/
     ├── CLAUDE.md               # Este arquivo — fonte de verdade
@@ -202,6 +204,8 @@ GET     /api/dashboard
 - Tipos explícitos — sem `any`
 - Chamadas à API centralizadas em `/services`
 - Nomenclatura em português para labels e textos de UI
+- Componentes base via **shadcn/ui** (em `components/ui`); estilização com **Tailwind CSS v4** (classes utilitárias), evitando estilos inline
+- Alias de importação `@/*` → `src/*`
 
 ---
 
@@ -224,6 +228,20 @@ GET     /api/dashboard
 - DentroDopadrao → --color-green (#9CDA97)
 - Atencao → --color-yellow (#FFC524)
 - ForaDoPadrao → --color-red (#FA9897)
+
+### Fundação de Componentes (shadcn/ui)
+- **shadcn/ui é a fundação de componentes, não a identidade visual.** A paleta
+  ArBrain permanece DOMINANTE.
+- As variáveis `--color-*` da paleta ArBrain vivem em `index.css` e são a fonte
+  de verdade das cores.
+- Os tokens semânticos do shadcn (`--background`, `--card`, `--primary`, etc.)
+  são remapeados para a paleta ArBrain (tema escuro) em `index.css`, de modo que
+  todos os componentes herdem a marca.
+- Obs.: `--primary`, `--secondary` e `--border` usam valores literais porque seus
+  nomes de token no Tailwind v4 (`--color-primary/secondary/border`) colidem com
+  a paleta ArBrain — literais evitam referência circular.
+- As classificações usam variantes próprias do `Badge` (`dentroDopadrao`,
+  `atencao`, `foraDoPadrao`) com as cores de status acima.
 
 ---
 

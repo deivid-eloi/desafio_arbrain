@@ -1,4 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom';
+import { cn } from '@/lib/utils';
+import { Separator } from '@/components/ui/separator';
 
 const navItems = [
   { to: '/', label: 'Dashboard' },
@@ -11,45 +13,27 @@ const navItems = [
 
 export default function Layout() {
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
-      <aside style={{
-        width: 220,
-        background: 'var(--color-primary)',
-        color: 'var(--color-gray-light)',
-        padding: '1.5rem 0',
-        display: 'flex',
-        flexDirection: 'column',
-        flexShrink: 0,
-      }}>
-        <h2 style={{
-          textAlign: 'center',
-          margin: '0 0 1.5rem',
-          padding: '0 0 1.25rem',
-          fontSize: '1.2rem',
-          color: 'var(--color-yellow)',
-          fontWeight: 700,
-          borderBottom: '1px solid rgba(255,255,255,0.12)',
-        }}>
+    <div className="flex min-h-screen">
+      <aside className="flex w-56 shrink-0 flex-col bg-sidebar py-6 text-sidebar-foreground">
+        <h2 className="px-4 pb-5 text-center text-xl font-bold text-(--color-yellow)">
           BrewControl
         </h2>
+        <Separator className="mb-4 bg-white/10" />
 
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {navItems.map(item => (
+        <nav className="flex flex-col gap-0.5">
+          {navItems.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               end={item.to === '/'}
-              style={({ isActive }) => ({
-                display: 'block',
-                padding: '0.65rem 1.25rem',
-                color: isActive ? 'var(--color-yellow)' : 'var(--color-gray-light)',
-                background: isActive ? 'rgba(255, 197, 36, 0.12)' : 'transparent',
-                textDecoration: 'none',
-                fontWeight: isActive ? 600 : 400,
-                fontSize: '0.9rem',
-                borderLeft: isActive ? '3px solid var(--color-yellow)' : '3px solid transparent',
-                transition: 'all 0.2s ease',
-              })}
+              className={({ isActive }) =>
+                cn(
+                  'border-l-[3px] px-5 py-2.5 text-sm transition-all',
+                  isActive
+                    ? 'border-(--color-yellow) bg-(--color-yellow)/10 font-semibold text-(--color-yellow)'
+                    : 'border-transparent font-normal text-sidebar-foreground/90 hover:bg-white/5',
+                )
+              }
             >
               {item.label}
             </NavLink>
@@ -57,12 +41,7 @@ export default function Layout() {
         </nav>
       </aside>
 
-      <main style={{
-        flex: 1,
-        padding: '1.5rem 2rem',
-        background: 'var(--color-bg)',
-        animation: 'fadeIn 0.3s ease',
-      }}>
+      <main className="flex-1 bg-background px-8 py-6">
         <Outlet />
       </main>
     </div>

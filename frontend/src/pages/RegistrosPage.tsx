@@ -5,19 +5,25 @@ import { tanquesService } from '../services/tanquesService';
 import { registrosService } from '../services/registrosService';
 import ClassificacaoBadge from '../components/ClassificacaoBadge';
 import LoadingSpinner from '../components/LoadingSpinner';
-
-const inputStyle: React.CSSProperties = {
-  width: '100%', padding: '0.5rem', borderRadius: 4,
-  border: '1px solid var(--color-border)', fontFamily: 'inherit', fontSize: '0.9rem',
-  background: 'var(--color-bg)', color: 'var(--color-gray-light)',
-  outline: 'none', transition: 'border-color 0.2s ease',
-};
-
-const btnStyle: React.CSSProperties = {
-  padding: '0.5rem 1rem', borderRadius: 4, border: 'none',
-  cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem',
-  transition: 'all 0.2s ease',
-};
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 const formVazio: RegistroRequest = {
   dataHora: '', cervejaId: 0, tanqueId: 0, numeroDeLote: '',
@@ -74,142 +80,156 @@ export default function RegistrosPage() {
   };
 
   return (
-    <div style={{ animation: 'fadeIn 0.3s ease' }}>
-      <h1 style={{ marginBottom: '0.25rem', color: 'var(--color-gray-light)' }}>Registros de Fermentação</h1>
-      <p style={{ color: 'var(--color-gray)', fontSize: '0.9rem', marginBottom: '1rem' }}>Registre e acompanhe as leituras de fermentação</p>
+    <div className="animate-fade-in">
+      <h1 className="text-2xl font-bold text-foreground">Registros de Fermentação</h1>
+      <p className="mt-1 mb-4 text-sm text-muted-foreground">Registre e acompanhe as leituras de fermentação</p>
 
-      {erro && <p style={{ color: 'var(--color-red)', marginBottom: '1rem' }}>{erro}</p>}
-      {sucesso && <p style={{ color: 'var(--color-green)', marginBottom: '1rem', fontWeight: 600 }}>{sucesso}</p>}
+      {erro && <p className="mb-4 text-sm text-(--color-red)">{erro}</p>}
+      {sucesso && <p className="mb-4 text-sm font-semibold text-(--color-green)">{sucesso}</p>}
 
-      <div style={{
-        background: 'var(--color-surface)',
-        padding: '1.25rem', borderRadius: 8, marginBottom: '1.5rem',
-        border: '1px solid var(--color-border)',
-      }}>
-        <h3 style={{ marginBottom: '1rem', color: 'var(--color-gray-light)' }}>Novo Registro</h3>
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Novo Registro</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="space-y-1.5">
+              <label className="text-sm text-muted-foreground">Cerveja</label>
+              <Select
+                value={form.cervejaId ? String(form.cervejaId) : undefined}
+                onValueChange={(v) => setForm({ ...form, cervejaId: parseInt(v) })}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="— Selecione —" />
+                </SelectTrigger>
+                <SelectContent>
+                  {cervejas.map((c) => (
+                    <SelectItem key={c.id} value={String(c.id)}>{c.nome}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-sm text-muted-foreground">Tanque</label>
+              <Select
+                value={form.tanqueId ? String(form.tanqueId) : undefined}
+                onValueChange={(v) => setForm({ ...form, tanqueId: parseInt(v) })}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="— Selecione —" />
+                </SelectTrigger>
+                <SelectContent>
+                  {tanques.map((t) => (
+                    <SelectItem key={t.id} value={String(t.id)}>{t.nome}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-sm text-muted-foreground">Nº do Lote</label>
+              <Input value={form.numeroDeLote} onChange={(e) => setForm({ ...form, numeroDeLote: e.target.value })} />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-sm text-muted-foreground">Data/Hora</label>
+              <Input
+                type="datetime-local"
+                value={form.dataHora}
+                onChange={(e) => setForm({ ...form, dataHora: e.target.value })}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-sm text-muted-foreground">Temperatura (°C)</label>
+              <Input
+                type="number"
+                step="0.1"
+                value={form.temperatura || ''}
+                onChange={(e) => setForm({ ...form, temperatura: parseFloat(e.target.value) || 0 })}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-sm text-muted-foreground">pH</label>
+              <Input
+                type="number"
+                step="0.01"
+                value={form.ph || ''}
+                onChange={(e) => setForm({ ...form, ph: parseFloat(e.target.value) || 0 })}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-sm text-muted-foreground">Extrato (°P)</label>
+              <Input
+                type="number"
+                step="0.01"
+                value={form.extrato || ''}
+                onChange={(e) => setForm({ ...form, extrato: parseFloat(e.target.value) || 0 })}
+              />
+            </div>
+            <div className="space-y-1.5 sm:col-span-2">
+              <label className="text-sm text-muted-foreground">Observações</label>
+              <Textarea
+                rows={2}
+                value={form.observacoes ?? ''}
+                onChange={(e) => setForm({ ...form, observacoes: e.target.value })}
+              />
+            </div>
+          </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem' }}>
-          <div>
-            <label style={{ fontSize: '0.85rem', color: 'var(--color-gray)' }}>Cerveja</label>
-            <select style={inputStyle} value={form.cervejaId || ''}
-              onFocus={e => e.target.style.borderColor = 'var(--color-yellow)'}
-              onBlur={e => e.target.style.borderColor = 'var(--color-border)'}
-              onChange={e => setForm({ ...form, cervejaId: parseInt(e.target.value) || 0 })}>
-              <option value="">— Selecione —</option>
-              {cervejas.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
-            </select>
-          </div>
-          <div>
-            <label style={{ fontSize: '0.85rem', color: 'var(--color-gray)' }}>Tanque</label>
-            <select style={inputStyle} value={form.tanqueId || ''}
-              onFocus={e => e.target.style.borderColor = 'var(--color-yellow)'}
-              onBlur={e => e.target.style.borderColor = 'var(--color-border)'}
-              onChange={e => setForm({ ...form, tanqueId: parseInt(e.target.value) || 0 })}>
-              <option value="">— Selecione —</option>
-              {tanques.map(t => <option key={t.id} value={t.id}>{t.nome}</option>)}
-            </select>
-          </div>
-          <div>
-            <label style={{ fontSize: '0.85rem', color: 'var(--color-gray)' }}>Nº do Lote</label>
-            <input style={inputStyle} value={form.numeroDeLote}
-              onFocus={e => e.target.style.borderColor = 'var(--color-yellow)'}
-              onBlur={e => e.target.style.borderColor = 'var(--color-border)'}
-              onChange={e => setForm({ ...form, numeroDeLote: e.target.value })} />
-          </div>
-          <div>
-            <label style={{ fontSize: '0.85rem', color: 'var(--color-gray)' }}>Data/Hora</label>
-            <input type="datetime-local" style={inputStyle} value={form.dataHora}
-              onFocus={e => e.target.style.borderColor = 'var(--color-yellow)'}
-              onBlur={e => e.target.style.borderColor = 'var(--color-border)'}
-              onChange={e => setForm({ ...form, dataHora: e.target.value })} />
-          </div>
-          <div>
-            <label style={{ fontSize: '0.85rem', color: 'var(--color-gray)' }}>Temperatura (°C)</label>
-            <input type="number" step="0.1" style={inputStyle} value={form.temperatura || ''}
-              onFocus={e => e.target.style.borderColor = 'var(--color-yellow)'}
-              onBlur={e => e.target.style.borderColor = 'var(--color-border)'}
-              onChange={e => setForm({ ...form, temperatura: parseFloat(e.target.value) || 0 })} />
-          </div>
-          <div>
-            <label style={{ fontSize: '0.85rem', color: 'var(--color-gray)' }}>pH</label>
-            <input type="number" step="0.01" style={inputStyle} value={form.ph || ''}
-              onFocus={e => e.target.style.borderColor = 'var(--color-yellow)'}
-              onBlur={e => e.target.style.borderColor = 'var(--color-border)'}
-              onChange={e => setForm({ ...form, ph: parseFloat(e.target.value) || 0 })} />
-          </div>
-          <div>
-            <label style={{ fontSize: '0.85rem', color: 'var(--color-gray)' }}>Extrato (°P)</label>
-            <input type="number" step="0.01" style={inputStyle} value={form.extrato || ''}
-              onFocus={e => e.target.style.borderColor = 'var(--color-yellow)'}
-              onBlur={e => e.target.style.borderColor = 'var(--color-border)'}
-              onChange={e => setForm({ ...form, extrato: parseFloat(e.target.value) || 0 })} />
-          </div>
-          <div style={{ gridColumn: 'span 2' }}>
-            <label style={{ fontSize: '0.85rem', color: 'var(--color-gray)' }}>Observações</label>
-            <input style={inputStyle} value={form.observacoes ?? ''}
-              onFocus={e => e.target.style.borderColor = 'var(--color-yellow)'}
-              onBlur={e => e.target.style.borderColor = 'var(--color-border)'}
-              onChange={e => setForm({ ...form, observacoes: e.target.value })} />
-          </div>
-        </div>
+          <Button onClick={salvar} disabled={salvando} className="mt-4">
+            {salvando ? 'Salvando...' : 'Salvar Registro'}
+          </Button>
+        </CardContent>
+      </Card>
 
-        <button onClick={salvar} disabled={salvando}
-          style={{ ...btnStyle, background: 'var(--color-primary)', color: '#fff', marginTop: '1rem', opacity: salvando ? 0.6 : 1 }}>
-          {salvando ? 'Salvando...' : 'Salvar Registro'}
-        </button>
-      </div>
-
-      <div style={{
-        background: 'rgba(255,197,36,0.08)', borderRadius: 6, padding: '0.75rem 1rem', marginBottom: '1.25rem',
-        border: '1px solid rgba(255,197,36,0.15)', fontSize: '0.85rem', color: 'var(--color-gray-light)',
-      }}>
+      <div className="mb-5 rounded-lg border border-(--color-yellow)/15 bg-(--color-yellow)/10 px-4 py-3 text-sm text-foreground">
         A classificação é calculada automaticamente com base nos parâmetros definidos para cada cerveja.
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-        <h3 style={{ color: 'var(--color-gray-light)' }}>Registros Recentes</h3>
+      <div className="mb-3 flex items-center justify-between">
+        <h3 className="text-base font-semibold text-foreground">Registros Recentes</h3>
         {registros.length > 0 && (
-          <span style={{ color: 'var(--color-gray)', fontSize: '0.85rem' }}>
+          <span className="text-sm text-muted-foreground">
             {registros.length} {registros.length === 1 ? 'registro' : 'registros'}
           </span>
         )}
       </div>
 
       {carregando ? <LoadingSpinner /> : (
-        <table style={{ width: '100%', borderCollapse: 'collapse', background: 'var(--color-surface)', borderRadius: 8, overflow: 'hidden', fontSize: '0.85rem', border: '1px solid var(--color-border)' }}>
-          <thead>
-            <tr style={{ background: 'var(--color-primary)', color: '#fff', textAlign: 'left' }}>
-              <th style={{ padding: '0.5rem 0.75rem' }}>Data/Hora</th>
-              <th style={{ padding: '0.5rem 0.75rem' }}>Cerveja</th>
-              <th style={{ padding: '0.5rem 0.75rem' }}>Tanque</th>
-              <th style={{ padding: '0.5rem 0.75rem' }}>Lote</th>
-              <th style={{ padding: '0.5rem 0.75rem' }}>Temp (°C)</th>
-              <th style={{ padding: '0.5rem 0.75rem' }}>pH</th>
-              <th style={{ padding: '0.5rem 0.75rem' }}>Extrato (°P)</th>
-              <th style={{ padding: '0.5rem 0.75rem' }}>Classificação</th>
-            </tr>
-          </thead>
-          <tbody>
-            {registros.length === 0 ? (
-              <tr><td colSpan={8} style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-gray)' }}>
-                Nenhum registro encontrado. Preencha o formulário acima para criar o primeiro.
-              </td></tr>
-            ) : registros.map(r => (
-              <tr key={r.id} style={{ borderBottom: '1px solid var(--color-border)', transition: 'background 0.2s ease' }}
-                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                <td style={{ padding: '0.5rem 0.75rem' }}>{new Date(r.dataHora).toLocaleString('pt-BR')}</td>
-                <td style={{ padding: '0.5rem 0.75rem' }}>{r.cervejaNome}</td>
-                <td style={{ padding: '0.5rem 0.75rem' }}>{r.tanqueNome}</td>
-                <td style={{ padding: '0.5rem 0.75rem' }}>{r.numeroDeLote}</td>
-                <td style={{ padding: '0.5rem 0.75rem' }}>{r.temperatura}</td>
-                <td style={{ padding: '0.5rem 0.75rem' }}>{r.ph}</td>
-                <td style={{ padding: '0.5rem 0.75rem' }}>{r.extrato}</td>
-                <td style={{ padding: '0.5rem 0.75rem' }}><ClassificacaoBadge classificacao={r.classificacao} /></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-(--color-primary) hover:bg-(--color-primary)">
+                <TableHead className="text-white">Data/Hora</TableHead>
+                <TableHead className="text-white">Cerveja</TableHead>
+                <TableHead className="text-white">Tanque</TableHead>
+                <TableHead className="text-white">Lote</TableHead>
+                <TableHead className="text-white">Temp (°C)</TableHead>
+                <TableHead className="text-white">pH</TableHead>
+                <TableHead className="text-white">Extrato (°P)</TableHead>
+                <TableHead className="text-white">Classificação</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {registros.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={8} className="py-8 text-center text-muted-foreground">
+                    Nenhum registro encontrado. Preencha o formulário acima para criar o primeiro.
+                  </TableCell>
+                </TableRow>
+              ) : registros.map((r) => (
+                <TableRow key={r.id}>
+                  <TableCell>{new Date(r.dataHora).toLocaleString('pt-BR')}</TableCell>
+                  <TableCell>{r.cervejaNome}</TableCell>
+                  <TableCell>{r.tanqueNome}</TableCell>
+                  <TableCell>{r.numeroDeLote}</TableCell>
+                  <TableCell>{r.temperatura}</TableCell>
+                  <TableCell>{r.ph}</TableCell>
+                  <TableCell>{r.extrato}</TableCell>
+                  <TableCell><ClassificacaoBadge classificacao={r.classificacao} /></TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       )}
     </div>
   );
