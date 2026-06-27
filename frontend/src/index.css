@@ -8,6 +8,9 @@
   --color-yellow: #ffc524;
   --color-green: #9cda97;
   --color-red: #fa9897;
+
+  --color-surface: #252535;
+  --color-border: rgba(255, 255, 255, 0.08);
 }
 
 * {
@@ -19,10 +22,28 @@
 body {
   font-family: 'Montserrat', sans-serif;
   background-color: var(--color-bg);
+  color: var(--color-gray-light);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
   min-height: 100vh;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

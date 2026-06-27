@@ -24,9 +24,11 @@ export default function Layout() {
         <h2 style={{
           textAlign: 'center',
           margin: '0 0 1.5rem',
+          padding: '0 0 1.25rem',
           fontSize: '1.2rem',
           color: 'var(--color-yellow)',
           fontWeight: 700,
+          borderBottom: '1px solid rgba(255,255,255,0.12)',
         }}>
           BrewControl
         </h2>
@@ -46,6 +48,7 @@ export default function Layout() {
                 fontWeight: isActive ? 600 : 400,
                 fontSize: '0.9rem',
                 borderLeft: isActive ? '3px solid var(--color-yellow)' : '3px solid transparent',
+                transition: 'all 0.2s ease',
               })}
             >
               {item.label}
@@ -54,7 +57,12 @@ export default function Layout() {
         </nav>
       </aside>
 
-      <main style={{ flex: 1, padding: '1.5rem 2rem', background: 'var(--color-gray-light)' }}>
+      <main style={{
+        flex: 1,
+        padding: '1.5rem 2rem',
+        background: 'var(--color-bg)',
+        animation: 'fadeIn 0.3s ease',
+      }}>
         <Outlet />
       </main>
     </div>

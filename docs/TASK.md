@@ -15,7 +15,7 @@ Core 100% funcional. Restam apenas deploy e respostas do desafio.
 
 - Banco de dados: PostgreSQL 16 via Docker, migrations aplicadas automaticamente na inicialização
 - Backend: **completo** — todos os endpoints do CLAUDE.md implementados e testados. Classificação automática funcionando no RegistrosService.
-- Frontend: **completo** — 6 páginas (Dashboard, Cervejas, Tanques, Parâmetros, Registros, Histórico). Design system ArBrain aplicado.
+- Frontend: **completo** — 6 páginas (Dashboard, Cervejas, Tanques, Parâmetros, Registros, Histórico). Design system ArBrain aplicado. Dark theme, animações, loading states, confirmação inline de exclusão.
 - Docker: **completo** — `docker compose up --build` sobe os 3 serviços (postgres + backend + frontend). Healthcheck no postgres, auto-migration, nginx com proxy reverso.
 - README: **completo** — instruções Docker e local, stack, endpoints, variáveis de ambiente.
 - Testes automatizados: não incluso (dívida técnica intencional, documentada no SPECS.md)
@@ -73,6 +73,7 @@ Core 100% funcional. Restam apenas deploy e respostas do desafio.
 - [x] Escrever README com instruções de execução
 - [x] Testar todos os fluxos manualmente (clean-slate Docker: down -v → up --build → full CRUD → classificação 3/3 → dashboard → histórico ✓)
 - [x] Auditoria completa do codebase — backend e frontend
+- [x] Melhorias visuais e UX — dark theme, animações, loading states, confirmação inline, empty states
 - [ ] Finalizar respostas às 4 perguntas do desafio
 - [ ] Fazer commit final e enviar link por e-mail
 
