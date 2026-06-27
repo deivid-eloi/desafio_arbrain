@@ -36,6 +36,24 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+// Captura exceções não tratadas e retorna ProblemDetails JSON padronizado,
+// evitando que stack traces vazem para o cliente.
+app.UseExceptionHandler(appBuilder =>
+{
+    appBuilder.Run(async context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        context.Response.ContentType = "application/problem+json";
+        await context.Response.WriteAsJsonAsync(new
+        {
+            type = "https://tools.ietf.org/html/rfc9110#section-15.6.1",
+            title = "Erro interno do servidor",
+            status = 500,
+            detail = "Ocorreu um erro inesperado. Tente novamente mais tarde."
+        });
+    });
+});
+
 // Aplica migrations pendentes automaticamente ao iniciar.
 // Garante que o banco esteja atualizado em Docker sem comandos manuais.
 using (var scope = app.Services.CreateScope())
@@ -49,8 +67,6 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
-
-app.UseHttpsRedirection();
 
 app.UseCors(FrontendCorsPolicy);
 

@@ -32,7 +32,9 @@ public class ParametrosController : ControllerBase
         return status switch
         {
             ResultadoParametros.CervejaNaoEncontrada => NotFound(),
-            ResultadoParametros.JaPossuiParametros => Conflict("A cerveja já possui parâmetros definidos. Use PUT para atualizar."),
+            ResultadoParametros.JaPossuiParametros =>
+                Problem(detail: "A cerveja já possui parâmetros definidos. Use PUT para atualizar.",
+                        statusCode: StatusCodes.Status409Conflict),
             _ => CreatedAtAction(nameof(ObterPorCerveja), new { cervejaId }, dados)
         };
     }

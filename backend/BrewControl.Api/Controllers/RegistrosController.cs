@@ -43,11 +43,14 @@ public class RegistrosController : ControllerBase
         return status switch
         {
             ResultadoRegistro.CervejaNaoEncontrada =>
-                NotFound("Cerveja não encontrada."),
+                Problem(detail: "Cerveja não encontrada.",
+                        statusCode: StatusCodes.Status404NotFound),
             ResultadoRegistro.TanqueNaoEncontrado =>
-                NotFound("Tanque não encontrado."),
+                Problem(detail: "Tanque não encontrado.",
+                        statusCode: StatusCodes.Status404NotFound),
             ResultadoRegistro.ParametrosNaoDefinidos =>
-                UnprocessableEntity("A cerveja não possui parâmetros fermentativos definidos. Cadastre-os antes de registrar."),
+                Problem(detail: "A cerveja não possui parâmetros fermentativos definidos. Cadastre-os antes de registrar.",
+                        statusCode: StatusCodes.Status422UnprocessableEntity),
             _ => CreatedAtAction(nameof(ObterPorId), new { id = dados!.Id }, dados)
         };
     }

@@ -1,6 +1,8 @@
 using BrewControl.Api.DTOs;
+using BrewControl.Api.Enums;
 using BrewControl.Api.Models;
 using BrewControl.Api.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace BrewControl.Api.Services;
 
@@ -55,17 +57,21 @@ public class TanquesService
         return MapearParaResponse(tanque);
     }
 
-    // Retorna false quando o tanque não existe, para o controller traduzir em 404.
-    public async Task<bool> RemoverAsync(int id)
+    public async Task<ResultadoExclusao> RemoverAsync(int id)
     {
         var tanque = await _repository.ObterPorIdAsync(id);
         if (tanque is null)
-        {
-            return false;
-        }
+            return ResultadoExclusao.NaoEncontrado;
 
-        await _repository.RemoverAsync(tanque);
-        return true;
+        try
+        {
+            await _repository.RemoverAsync(tanque);
+            return ResultadoExclusao.Sucesso;
+        }
+        catch (DbUpdateException)
+        {
+            return ResultadoExclusao.PossuiDependencias;
+        }
     }
 
     private static TanqueResponse MapearParaResponse(Tanque tanque) => new()

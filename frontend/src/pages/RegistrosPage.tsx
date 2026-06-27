@@ -28,12 +28,12 @@ export default function RegistrosPage() {
   const [sucesso, setSucesso] = useState('');
 
   const carregar = () => {
-    registrosService.listarTodos().then(setRegistros).catch(() => {});
+    registrosService.listarTodos().then(setRegistros).catch(() => setErro('Erro ao carregar registros.'));
   };
 
   useEffect(() => {
-    cervejasService.listarTodas().then(setCervejas).catch(() => {});
-    tanquesService.listarTodos().then(setTanques).catch(() => {});
+    cervejasService.listarTodas().then(setCervejas).catch(() => setErro('Erro ao carregar dados.'));
+    tanquesService.listarTodos().then(setTanques).catch(() => setErro('Erro ao carregar dados.'));
     carregar();
   }, []);
 
@@ -49,13 +49,12 @@ export default function RegistrosPage() {
       setForm(formVazio);
       carregar();
     } catch (e: unknown) {
-      // Mensagem de erro do backend (ex: cerveja sem parâmetros).
-      if (e && typeof e === 'object' && 'response' in e) {
-        const resp = (e as { response: { data: string } }).response;
-        setErro(typeof resp.data === 'string' ? resp.data : 'Erro ao criar registro.');
-      } else {
-        setErro('Erro ao criar registro.');
-      }
+      const resp = (e as { response?: { data?: Record<string, unknown> | string } })?.response;
+      const data = resp?.data;
+      const mensagem = typeof data === 'string'
+        ? data
+        : (data as { detail?: string } | undefined)?.detail;
+      setErro(mensagem || 'Erro ao criar registro.');
     }
   };
 

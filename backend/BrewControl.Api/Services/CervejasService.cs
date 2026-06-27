@@ -1,6 +1,8 @@
 using BrewControl.Api.DTOs;
+using BrewControl.Api.Enums;
 using BrewControl.Api.Models;
 using BrewControl.Api.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace BrewControl.Api.Services;
 
@@ -55,17 +57,21 @@ public class CervejasService
         return MapearParaResponse(cerveja);
     }
 
-    // Retorna false quando a cerveja não existe, para o controller traduzir em 404.
-    public async Task<bool> RemoverAsync(int id)
+    public async Task<ResultadoExclusao> RemoverAsync(int id)
     {
         var cerveja = await _repository.ObterPorIdAsync(id);
         if (cerveja is null)
-        {
-            return false;
-        }
+            return ResultadoExclusao.NaoEncontrado;
 
-        await _repository.RemoverAsync(cerveja);
-        return true;
+        try
+        {
+            await _repository.RemoverAsync(cerveja);
+            return ResultadoExclusao.Sucesso;
+        }
+        catch (DbUpdateException)
+        {
+            return ResultadoExclusao.PossuiDependencias;
+        }
     }
 
     private static CervejaResponse MapearParaResponse(Cerveja cerveja) => new()

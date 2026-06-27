@@ -72,6 +72,7 @@ Core 100% funcional. Restam apenas deploy e respostas do desafio.
 - [x] Docker completo (postgres + backend + frontend)
 - [x] Escrever README com instruções de execução
 - [x] Testar todos os fluxos manualmente (clean-slate Docker: down -v → up --build → full CRUD → classificação 3/3 → dashboard → histórico ✓)
+- [x] Auditoria completa do codebase — backend e frontend
 - [ ] Finalizar respostas às 4 perguntas do desafio
 - [ ] Fazer commit final e enviar link por e-mail
 
@@ -87,6 +88,17 @@ Core 100% funcional. Restam apenas deploy e respostas do desafio.
 ## Riscos Conhecidos
 
 - Nenhum risco bloqueante. Core 100% funcional e testado via Docker.
+
+---
+
+## Correções da Auditoria
+
+- **FK delete crash → 409 Conflict** — exclusão de Cerveja/Tanque com registros vinculados agora retorna 409 com ProblemDetails (antes: 500 com stack trace)
+- **Global exception handler** — exceções não tratadas retornam JSON padronizado, sem vazar stack traces
+- **Respostas de erro padronizadas** — todos os endpoints usam ProblemDetails (400, 404, 409, 422, 500)
+- **Frontend: erros silenciosos** — RegistrosPage agora exibe mensagem quando API está inacessível (antes: `.catch(() => {})`)
+- **Frontend: extração de erro** — compatível com ProblemDetails (extrai campo `detail`)
+- **Removido UseHttpsRedirection** — middleware era no-op (app só escuta HTTP)
 
 ---
 

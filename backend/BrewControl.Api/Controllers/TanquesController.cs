@@ -1,4 +1,5 @@
 using BrewControl.Api.DTOs;
+using BrewControl.Api.Enums;
 using BrewControl.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -47,7 +48,14 @@ public class TanquesController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Remover(int id)
     {
-        var removido = await _service.RemoverAsync(id);
-        return removido ? NoContent() : NotFound();
+        var resultado = await _service.RemoverAsync(id);
+        return resultado switch
+        {
+            ResultadoExclusao.NaoEncontrado => NotFound(),
+            ResultadoExclusao.PossuiDependencias =>
+                Problem(detail: "Não é possível remover. Existem registros vinculados a este tanque.",
+                        statusCode: StatusCodes.Status409Conflict),
+            _ => NoContent()
+        };
     }
 }
