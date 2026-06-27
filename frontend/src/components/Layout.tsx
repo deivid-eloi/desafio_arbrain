@@ -4,7 +4,7 @@ import { Separator } from '@/components/ui/separator';
 import iconDashboard from '@/assets/icons/monitor-dashboard.svg';
 import iconCervejas from '@/assets/icons/Vector-3.svg';
 import iconTanques from '@/assets/icons/Tanque cheio.svg';
-import iconParametros from '@/assets/icons/manutencao-1.svg';
+import iconParametros from '@/assets/icons/manutencao.svg';
 import iconRegistros from '@/assets/icons/agenda-pedidos.svg';
 import iconHistorico from '@/assets/icons/Frame 126.svg';
 
