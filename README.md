@@ -6,7 +6,7 @@ Sistema de controle de fermentação cervejeira. Permite cadastrar cervejas, tan
 
 | Camada   | Tecnologia                        |
 |----------|-----------------------------------|
-| Frontend | React 19 + TypeScript (Vite)      |
+| Frontend | React 19 + TypeScript (Vite) + Tailwind CSS v4 + shadcn/ui |
 | Backend  | C# / .NET 9 — Web API             |
 | Banco    | PostgreSQL 16                     |
 | ORM      | Entity Framework Core 9           |

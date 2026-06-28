@@ -50,6 +50,7 @@ Durante o processo de fermentação, cervejarias acompanham periodicamente parâ
 - Seleção de um lote
 - Listagem cronológica de todos os apontamentos do lote
 - Exibição de data, temperatura, pH, extrato e classificação por registro
+- Gráfico de evolução do lote — temperatura, pH e extrato ao longo do tempo (incluído como melhoria além do MVP)
 
 ---
 
@@ -83,7 +84,6 @@ de pH e extrato são mais toleráveis no curto prazo e passíveis de correção.
 - Autenticação e controle de acesso
 - Multi-tenancy
 - Exportação de relatórios (PDF/Excel)
-- Gráficos de evolução de lotes
 - Notificações automáticas
 - Integração com sensores ou dispositivos IoT
 - Deploy em produção
