@@ -81,8 +81,6 @@ Core 100% funcional. Restam apenas deploy e respostas do desafio.
 - [x] Gráfico "Evolução do Lote" na página de Histórico (Recharts) — `LineChart`/`ResponsiveContainer` (largura total, 300px), três linhas (Temperatura `#FA9897`, pH `#FFC524`, Extrato `#9CDA97`) com eixo Y auto-escalado por métrica, eixo X `dd/MM HH:mm`, `Legend` + `Tooltip`, e `ReferenceLine` de mín/máx a partir de `GET /api/cervejas/{id}/parametros`; renderizado apenas quando há resultados, sem nova chamada para os dados do gráfico; `tsc -b` limpo; Docker do frontend rebuildado
 - [x] Testes de unidade da classificação automática — projeto xUnit `backend/BrewControl.Tests` (net9.0) com 5 testes cobrindo todos os cenários (dentro, pH/extrato fora → atenção, temperatura fora → fora, prioridade da temperatura); lógica pura extraída para `ClassificacaoHelper` (fonte única, sem dependência de banco/HTTP) e `RegistrosService.Classificar` passa a delegar; `dotnet test` verde (5/5)
 - [x] Revisão pré-deploy — auditoria de README/docs/código/git/Docker. Sem `console.log`, sem `TODO`/`FIXME`, sem placeholders; `tsc -b --noEmit` limpo; cores "hardcoded" são literais justificados e documentados (`#acbbcd` para Total — `--color-secondary` é sombreado por `@theme inline`; cores do gráfico Recharts; texto sobre amarelo). Correções aplicadas: SPECS (gráfico de evolução movido de "Fora do Escopo" para entregue), README Stack (Tailwind v4 + shadcn/ui), `docker-compose.yml` (`restart: unless-stopped` nos 3 serviços)
-- [ ] Finalizar respostas às 4 perguntas do desafio
-- [ ] Fazer commit final e enviar link por e-mail
 
 ---
 
